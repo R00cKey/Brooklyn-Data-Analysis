@@ -14,9 +14,11 @@ class AnaTools{
   
  public:
   
-  AnaTools(TFile *f,Event *myEvent);
+  //COSTRUTTORE E DISTRUTTORE
+  AnaTools(TFile *f, Event *myEvent);
   virtual ~AnaTools();
 
+	//METODI PER ANALISI DATI
   void BookingHistograms();
   void Process();
   void Clear();
