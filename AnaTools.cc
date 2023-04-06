@@ -35,12 +35,11 @@ void AnaTools::BookingHistograms(){
 //METODO CHE FA ANALISI DATI E CALCOLA LA CARICA
 void AnaTools::Process(){
 	double tot_charge=0;
-	double dt=312.5e-12; 
-	for(int i =0; i < event->getWaveforms().size(); i++){
+	for(unsigned int i =0; i < event->getWaveforms().size(); i++){
 		cout <<"i" << endl;
 		double charge=0;
  		for(int k=0; k < NSAMPLING; k++)
- 			charge +=  event->getWaveforms()[i]->getv_amplitude()[k]*dt;
+ 			charge +=  event->getWaveforms()[i]->getv_amplitude()[k]*SAMPLINGPERIOD;
  		event->getWaveforms()[i]->setcharge(charge/50); //divido per R=50Ohm
  		tot_charge += event->getWaveforms()[i]->getcharge(); //il getter dovrebbe contenere la charge modificata dal setter che ho appena chiamato
 	}
