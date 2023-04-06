@@ -8,6 +8,7 @@
 
 
 #define NSAMPLING 1024 //to be checked: sembra di sì
+#define SAMPLINGPERIOD 312.5e-12
 
 using namespace std;
 
