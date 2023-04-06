@@ -11,9 +11,12 @@
 #include <iostream>
 #include <cstdlib>
 #include <string>
+#include <string.h>
 #include <TMinuit.h>
 #include <math.h>
 
+
+#define NEVENTS  20; //bisogna prenderlo dal file di output
 
 using namespace std;
 
@@ -26,20 +29,28 @@ AnaTools::~AnaTools(){};
 
 //METODO CHE PRENOTA GLI ISTOGRAMMI
 void AnaTools::BookingHistograms(){
-	for(int i=0; i<20;i++){                       
-  	char dir[10]="Evento"; 
-  	char *newEvent=strcat(dir, to_string(i).c_str());
-    }                         
-  	TH1D *h=(TH1D*)gDirectory->mkdir(&dir[0]);
-  	gDirectory->cd(&dir[0]);
-  	*h + TH1D("histo_test", "Waveform1 evento 1", 1024, 0, 1024*SAMPLINGPERIOD); 
-  	h->setbincontent;
-  }
-  outfile->cd();
-  
-  //here define histograms
-	//h = new TH1D("histo_test","",100,-5,5);
+
+	for(int i=1; i<=20; i++){       
 	
+		//assegnamo il nome a ciascun evento                
+		char dir[10]="Evento";
+  	char *newEvent=strcat(dir, to_string(i).c_str());        
+  	             
+  	//booking&filling dei 16 istogrammi per ogni evento
+  	TH1D *h[16]={(TH1D*)gDirectory->mkdir(&newEvent[0])}; //curly brackets perchè è un array di histo
+  	gDirectory->cd(&newEvent[0]);
+  	for(int k=1; k<=event->getWaveforms().size();k++){
+  		TString name = Form("Event %d, Channel %d", i,k);
+  		TString title = Form("Event %d, Channel %d; time[ps]; Amplitude(mV)", i,k); //da controllare le unità di misura
+  		h[k] = new TH1D(name, title, 1024, 0, 1024*SAMPLINGPERIOD);
+  		for(int j=0; j<NSAMPLING; j++)
+  			h[k]->SetBinContent(j, event->getWaveforms()[k]->getv_amplitude()[j]);
+  	}
+  	
+  	outfile->cd();
+  
+	}
+
 }
 
 //METODO CHE FA ANALISI DATI E CALCOLA LA CARICA
