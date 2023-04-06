@@ -20,6 +20,15 @@ class Event{
 
   void ReadEvent(string inname, int* pos);
   void Clear();
+
+ //GETTERS
+  vector<Waveform*> getWaveforms(); 
+  double gettot_charge();
+  double gettime();
+  
+  //SETTERS
+  void settot_charge(double caricaTotale);
+  void settime(double tempo);
   
  private:
 

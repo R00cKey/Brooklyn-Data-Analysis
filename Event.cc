@@ -90,3 +90,21 @@ void Event::Clear(){
   return;
 
 }
+
+
+
+//GETTERS
+vector<Waveform*> Event::getWaveforms(){
+       return myWaveforms;
+} 
+double Event::gettot_charge(){
+       return tot_charge;
+}
+double Event::gettime(){
+       return time;
+}
+ 
+//SETTERS
+void Event::settot_charge(double caricaTotale){
+       tot_charge=caricaTotale;
+}
