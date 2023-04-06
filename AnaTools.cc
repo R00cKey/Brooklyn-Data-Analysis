@@ -26,19 +26,20 @@ AnaTools::~AnaTools(){};
 
 //METODO CHE PRENOTA GLI ISTOGRAMMI
 void AnaTools::BookingHistograms(){
-  for(int i=0; i<20;i++){//Al momento, dalla 10a directory non scrive più numeri (per ovvi motivi)
-
-  char dir[10]="Evento";
-  dir[6]=i+'0';
-  TH1D *h=(TH1D*)gDirectory->mkdir(&dir[0]);
-  //gDirectory->cd(&dir[0]);
-  //*h + TH1D("histo_test", "Waveform1 evento 1", 1024, 0, 1024*SAMPLINGPERIOD); 
-  //h->setbincontent
+	for(int i=0; i<20;i++){                       
+  	char dir[10]="Evento"; 
+  	char *newEvent=strcat(dir, to_string(i).c_str());
+    }                         
+  	TH1D *h=(TH1D*)gDirectory->mkdir(&dir[0]);
+  	gDirectory->cd(&dir[0]);
+  	*h + TH1D("histo_test", "Waveform1 evento 1", 1024, 0, 1024*SAMPLINGPERIOD); 
+  	h->setbincontent;
   }
   outfile->cd();
+  
   //here define histograms
-
-  //h = new TH1D("histo_test","",100,-5,5);
+	//h = new TH1D("histo_test","",100,-5,5);
+	
 }
 
 //METODO CHE FA ANALISI DATI E CALCOLA LA CARICA
