@@ -26,17 +26,25 @@ AnaTools::~AnaTools(){};
 
 //METODO CHE PRENOTA GLI ISTOGRAMMI
 void AnaTools::BookingHistograms(){
-  TH1D *h; 
+  for(int i=0; i<20;i++){//Al momento, le directory si innestano una dentro l'altra
+
+  char dir[10]="Evento";
+  dir[6]=i+'0';
+  TH1D *h=(TH1D*)gDirectory->mkdir(&dir[0]);
+  gDirectory->cd(&dir[0]);
+  //*h + TH1D("histo_test", "Waveform1 evento 1", 1024, 0, 1024*SAMPLINGPERIOD); 
+  //h->setbincontent
+  }
   outfile->cd();
   //here define histograms
-  h = new TH1D("histo_test","",100,-5,5);
+
+  //h = new TH1D("histo_test","",100,-5,5);
 }
 
 //METODO CHE FA ANALISI DATI E CALCOLA LA CARICA
 void AnaTools::Process(){
 	double tot_charge=0;
 	for(unsigned int i =0; i < event->getWaveforms().size(); i++){
-		cout <<"i" << endl;
 		double charge=0;
  		for(int k=0; k < NSAMPLING; k++)
  			charge +=  event->getWaveforms()[i]->getv_amplitude()[k]*SAMPLINGPERIOD;
