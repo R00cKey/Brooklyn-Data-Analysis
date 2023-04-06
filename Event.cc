@@ -13,61 +13,80 @@
 #include <string>
 #include <TMinuit.h>
 #include <math.h>
-
+#include <fstream>
+#include <sstream>
+#include <vector>
+#define NSAMPLING 1024
 
 using namespace std;
-
-<<<<<<< HEAD
-
 
 Event::Event(){
  
   tot_charge = -1000;
   time = -1000;   
-=======
-//COSTRUTTORE E DISTRUTTORE
-Event::Event(){ 
-  tot_charge = -1000; //valori di inizializzazione a caso solo per avere dei getter da usare (credo)
-  time = -1000;
-}
-Event::~Event(){};
-
-//METODO CHE LEGGE DA FILE
-char* Event::ReadEvent(FILE *file){
-	//da capire come si fa, userei la funzione fgets
-	return NULL;
->>>>>>> 0a955c4067d33fe06be2a36baecb01c4fb387f57
 }
 
-//GETTERS
-vector<Waveform*> Event::getWaveforms(){
-	return myWaveforms;
-} 
-double Event::gettot_charge(){
-	return tot_charge;
-}
-double Event::gettime(){
-	return time;
+Event::~Event(){}
+
+
+void Event::ReadEvent(string inname, int* pos){
+
+  ifstream myReadFile; //File "inname.dat" stream
+  string fileline; //A line of the File
+  string temp;    //Single value
+  stringstream stream;    //Stream to navigate fileline
+  vector<string> v;   //Vector of strings containing all the values (aka, temp)
+  double va[NSAMPLING]; //Vector containing the values converted to double
+  double vt[NSAMPLING]; //Vector containing the time steps
+  int channel=0;
+  //Reading position of the file
+  myReadFile.open(inname);
+  myReadFile.seekg(*pos);
+
+  while(channel<16){  //Read file
+    getline(myReadFile,  fileline); //write the line from file to string fileline
+    if(fileline.find('=')==0){  //ignore lines which do not contain amplitude data
+      fileline.clear();
+      channel--;
+    }
+    else{
+      stringstream stream(fileline);
+      while (getline(stream, temp, ' ')) {    //Values in line are separated by space (' ')
+      v.push_back(temp); //add value (still as string) to vector<string> temp
+      }
+      if(v.size()==NSAMPLING+1){v.erase(v.end());}    //Sometimes, the program will a read an empty entry at the end. Delete that entry
+
+      for (unsigned int i = 0; i < v.size(); i++) { //Convert vector<string> to array of double
+        va[i]=stod(v[i]);
+        vt[i]=i*SAMPLINGPERIOD;
+      }
+      Waveform *newchannel = new Waveform(&vt[0],&va[0]);
+      myWaveforms.push_back(newchannel);
+      v.clear();
+    }
+
+    channel++; 
+  }
+
+  *pos = myReadFile.tellg();
+  //Clears and file closing, to prevent memory leaks
+  v.clear();
+  fileline.clear();
+  myReadFile.close();
 }
 
-//SETTERS
-void Event::settot_charge(double caricaTotale){
-	tot_charge=caricaTotale;
-}
 
-void Event::settime(double tempo){
-	time=tempo;
-}
+void Event::Clear(){
 
-//METODO CHE LIBERA MEMORIA
-void Event::Clear(){ 
-	for(int iW=0;iW<myWaveforms.size();iW++){
+
+  for(long unsigned int iW=0;iW<myWaveforms.size();iW++){
     delete myWaveforms.at(iW);
   }
   myWaveforms.clear();
+
+  tot_charge = -1000;
+  time = -1000;
+
+  return;
+
 }
-
-
-
-//return;
-

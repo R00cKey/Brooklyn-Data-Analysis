@@ -69,7 +69,6 @@ int main(int argc, char *argv[]){
   //loop on events, read an event until file is finished
   while(filepos<filelength){
     myEvent->ReadEvent(inname, &filepos);
-    cout<< "Event read:" << j+1 << endl;
     myAnaTools->Process();
     myAnaTools->Clear();
     myEvent->Clear();
@@ -77,7 +76,7 @@ int main(int argc, char *argv[]){
 
   }
 
-
+  cout<< "No. Events read:" << j << endl; 
 
   infile.close();
   
