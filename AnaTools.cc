@@ -78,14 +78,19 @@ void AnaTools::FillHistogram(int directory){
 
 	char dir[10]="Evento";
   char *newEvent=strcat(dir, to_string(directory).c_str());
-
   outfile->cd();	             
   //booking dei 16 istogrammi per ogni evento
-	for(int k=1; k<=event->getWaveforms().size();k++){
+	for(int k=1; k<=16;k++){	//k<=event->getWaveforms().size()
+		string histostring = "Event_";
+		histostring.append(to_string(directory));
+  	histostring.append("_Channel_");
+  	histostring.append(to_string(k));
+  	//char *histoname = histostring.c_str();
 		TH1D *h=(TH1D*)gDirectory->cd(&newEvent[0]);
-  	gDirectory->Get("Event_%d_Channel_%d", directory, k)
-  		TString name = Form("Event %d, Channel %d", directory,k);
-  		for(int j=0; j<NSAMPLING; j++)
-  			h->SetBinContent(j, event->getWaveforms()[k]->getv_amplitude()[j]);
+  	gDirectory->Get(histostring.data());
+  	TString name = Form("Event %d, Channel %d", directory,k);
+  	for(int j=0; j<NSAMPLING; j++)
+  		h->SetBinContent(j, event->getWaveforms()[k-1]->getv_amplitude()[j]);
+  histostring.clear();
  	}
 }
