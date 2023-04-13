@@ -40,7 +40,7 @@ void AnaTools::BookingHistograms(){
   	TH1D *h[16]={(TH1D*)gDirectory->mkdir(&newEvent[0])}; //curly brackets perchè è un array di histo
   	gDirectory->cd(&newEvent[0]);
   	
-  	for(unsigned int k=1; k<=16;k++){
+  	for(unsigned int k=1; k<=NCHANNELS;k++){
   		TString name = Form("Event_%d_Channel_%d", i,k);
   		TString title = Form("Event %d, Channel %d; time[ps]; Amplitude(mV)", i,k); //da controllare le unità di misura
   		h[k] = new TH1D(name, title, 1024, 0, 1024*SAMPLINGPERIOD);
@@ -74,20 +74,18 @@ void AnaTools::Clear(){
 }
 
 
-void FillHistogram(int directory){
+void AnaTools::FillHistogram(int directory){
 
 	char dir[10]="Evento";
   char *newEvent=strcat(dir, to_string(directory).c_str());
 
   outfile->cd();	             
-  //booking&filling dei 16 istogrammi per ogni evento
-  TH1D *h=(TH1D*)gDirectory->cd(&newEvent[0]);
-
+  //booking dei 16 istogrammi per ogni evento
 	for(int k=1; k<=event->getWaveforms().size();k++){
+		TH1D *h=(TH1D*)gDirectory->cd(&newEvent[0]);
+  	gDirectory->Get("Event_%d_Channel_%d", directory, k)
   		TString name = Form("Event %d, Channel %d", directory,k);
-  		h[k] = new TH1D(name, title, 1024, 0, 1024*SAMPLINGPERIOD);
   		for(int j=0; j<NSAMPLING; j++)
-  			h[k]->SetBinContent(j, event->getWaveforms()[k]->getv_amplitude()[j]);
-  			h[k]->Draw();
+  			h->SetBinContent(j, event->getWaveforms()[k]->getv_amplitude()[j]);
  	}
 }

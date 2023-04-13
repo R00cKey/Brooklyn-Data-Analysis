@@ -68,7 +68,7 @@ int main(int argc, char *argv[]){
 
   //loop on events, read an event until file is finished
   while(filepos<filelength){
-    myEvent->ReadEvent(inname, &filepos);
+    myEvent->ReadEvent(inname, &filepos); 
     myAnaTools->Process();
     myAnaTools->Clear();
     myEvent->Clear();
