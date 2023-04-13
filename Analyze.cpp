@@ -27,7 +27,7 @@ int main(int argc, char *argv[]){
   int nevent=1e9;
   int filepos=0;
   int filelength;
-  int j=0;
+  int j=1;
   
   for(int i=0; i< argc; i++){
     if(strcmp("-in",argv[i])==0){
@@ -68,7 +68,8 @@ int main(int argc, char *argv[]){
 
   //loop on events, read an event until file is finished
   while(filepos<filelength){
-    myEvent->ReadEvent(inname, &filepos); 
+    myEvent->ReadEvent(inname, &filepos);
+    if(j<=20){myAnaTools->FillHistogram(j);}
     myAnaTools->Process();
     myAnaTools->Clear();
     myEvent->Clear();
@@ -76,7 +77,7 @@ int main(int argc, char *argv[]){
 
   }
 
-  cout<< "No. Events read:" << j << endl; 
+  cout<< "No. Events read:" << j-1 << endl; 
 
   infile.close();
   
