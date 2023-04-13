@@ -44,9 +44,6 @@ void AnaTools::BookingHistograms(){
   		TString name = Form("Event_%d_Channel_%d", i,k);
   		TString title = Form("Event %d, Channel %d; time[ps]; Amplitude(mV)", i,k); //da controllare le unità di misura
   		h[k] = new TH1D(name, title, 1024, 0, 1024*SAMPLINGPERIOD);
-  		/*for(int j=1; j<=NSAMPLING; j++){
-  			h[k]->SetBinContent(j, event->getWaveforms()[k]->getv_amplitude()[j]);
-  		}*/
   	}
   gDirectory->cd("..");	
 	}
@@ -78,19 +75,20 @@ void AnaTools::FillHistogram(int directory){
 
 	char dir[10]="Evento";
   char *newEvent=strcat(dir, to_string(directory).c_str());
-  outfile->cd();	             
+  outfile->cd();	
+  TH1D *h=(TH1D*)gDirectory->cd(&newEvent[0]);
   //booking dei 16 istogrammi per ogni evento
-	for(int k=1; k<=16;k++){	//k<=event->getWaveforms().size()
+	for(int k=1; k<=event->getWaveforms().size();k++){
+  int k=1;
 		string histostring = "Event_";
 		histostring.append(to_string(directory));
   	histostring.append("_Channel_");
   	histostring.append(to_string(k));
-  	//char *histoname = histostring.c_str();
-		TH1D *h=(TH1D*)gDirectory->cd(&newEvent[0]);
   	gDirectory->Get(histostring.data());
-  	TString name = Form("Event %d, Channel %d", directory,k);
-  	for(int j=0; j<NSAMPLING; j++)
-  		h->SetBinContent(j, event->getWaveforms()[k-1]->getv_amplitude()[j]);
+  	for(int j=0; j<NSAMPLING; j++){
+  		cout << "Dentro for" << endl;	//arriva qui e poi dà Segmentation Violation
+  		h->SetBinContent(j+1, event->getWaveforms()[k-1]->getv_amplitude()[j]);
+  	}
   histostring.clear();
  	}
 }
