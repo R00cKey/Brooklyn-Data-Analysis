@@ -69,25 +69,24 @@ int main(int argc, char *argv[]){
   //loop on events, read an event until file is finished
   while(filepos<filelength){
     myEvent->ReadEvent(inname, &filepos);
-    if(j<=20){myAnaTools->FillHistogram(j);}
+    if(j<=3){myAnaTools->FillHistogram(j);}
     myAnaTools->Process();
-    myAnaTools->Clear();
+
     myEvent->Clear();
     j++;
 
   }
-
+	
   cout<< "No. Events read:" << j-1 << endl; 
-
+ 
   infile.close();
   
   //close output file
   f->Write();
   f->Close();
 
-
-
-
+  //cout<< "test" << j-1 << endl;
+  delete myAnaTools;
 
 
   return 0;

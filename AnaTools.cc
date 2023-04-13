@@ -25,25 +25,43 @@ AnaTools::AnaTools(TFile *f, Event *myEvent){
   outfile = f;
   event = myEvent;
 }
-AnaTools::~AnaTools(){};
 
 //METODO CHE PRENOTA GLI ISTOGRAMMI
 void AnaTools::BookingHistograms(){
-	outfile->cd();
-	for(int i=1; i<=20; i++){       
+	outfile->cd("..");
+	gDirectory->mkdir("Hist_Total_Charge");
+	gDirectory->cd("Hist_Total_Charge");
+  	TString name = Form("Hist_total_charge");
+  	TString title = Form("Total Charge distribution; charge[]; Frequency(#)"); //da controllare le unità di misura
+  	hctot = new TH1D(name, title, 100, 0, 100);
+  	gDirectory->cd("..");
+  	gDirectory->mkdir("Hist_Cariche_Canali");
+  	gDirectory->cd("Hist_Cariche_Canali");
+	for(unsigned int k=1; k<=NCHANNELS;k++){
+  		TString name = Form("Hist_Channel_%d",k);
+  		TString title = Form("Charge distribution channel %d; charge[]; Frequency(#)", k); //da controllare le unità di misura
+  		hc_vector[k] = new TH1D(name, title, 100, 0, 100);
+  		/*for(int j=1; j<=NSAMPLING; j++){
+  			h[k]->SetBinContent(j, event->getWaveforms()[k]->getv_amplitude()[j]);
+  		}*/
+  	}
+	gDirectory->cd("..");
+	
+	for(int i=1; i<=3; i++){       
 	
 		//assegnamo il nome a ciascun evento                
 		char dir[10]="Evento";
   	char *newEvent=strcat(dir, to_string(i).c_str());        
   	             
   	//booking&filling dei 16 istogrammi per ogni evento
-  	TH1D *h[16]={(TH1D*)gDirectory->mkdir(&newEvent[0])}; //curly brackets perchè è un array di histo
+  	gDirectory->mkdir(&newEvent[0]);
+
   	gDirectory->cd(&newEvent[0]);
-  	
+
   	for(unsigned int k=1; k<=NCHANNELS;k++){
   		TString name = Form("Event_%d_Channel_%d", i,k);
   		TString title = Form("Event %d, Channel %d; time[ps]; Amplitude(mV)", i,k); //da controllare le unità di misura
-  		h[k] = new TH1D(name, title, 1024, 0, 1024*SAMPLINGPERIOD);
+  		hist_vector[i-1][k-1] = new TH1D(name, title, 1024, 0, 1024*SAMPLINGPERIOD);
   	}
   gDirectory->cd("..");	
 	}
@@ -64,7 +82,7 @@ void AnaTools::Process(){
 }
 
 //METODO CHE LIBERA MEMORIA
-void AnaTools::Clear(){
+AnaTools::~AnaTools(){
 
   return;
 
@@ -72,23 +90,21 @@ void AnaTools::Clear(){
 
 
 void AnaTools::FillHistogram(int directory){
-
 	char dir[10]="Evento";
   char *newEvent=strcat(dir, to_string(directory).c_str());
-  outfile->cd();	
-  TH1D *h=(TH1D*)gDirectory->cd(&newEvent[0]);
-  //booking dei 16 istogrammi per ogni evento
+  outfile->cd();
+  gDirectory->cd(&newEvent[0]);
+	
+
+  std::cout << &newEvent[0] << endl;
+  //h->SetBinContent(1, event->getWaveforms()[1-1]->getv_amplitude()[0]);
 	for(int k=1; k<=event->getWaveforms().size();k++){
-  int k=1;
-		string histostring = "Event_";
-		histostring.append(to_string(directory));
-  	histostring.append("_Channel_");
-  	histostring.append(to_string(k));
-  	gDirectory->Get(histostring.data());
-  	for(int j=0; j<NSAMPLING; j++){
-  		cout << "Dentro for" << endl;	//arriva qui e poi dà Segmentation Violation
-  		h->SetBinContent(j+1, event->getWaveforms()[k-1]->getv_amplitude()[j]);
-  	}
-  histostring.clear();
+  		for(int j=0; j<NSAMPLING; j++){
+  			//cout << "Dentro for" << endl;	//arriva qui e poi dà Segmentation Violation
+  			//h[j]->FillRandom("gaus",10000.);
+  			hist_vector[directory-1][k-1]->SetBinContent(j+1, event->getWaveforms()[k-1]->getv_amplitude()[j]);
+  		}
+  		//cout << "fuori for" << endl;	//arriva qui e poi dà Segmentation Violation
+ 		// hc_vector[]
  	}
 }
