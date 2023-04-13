@@ -18,12 +18,12 @@ class AnaTools{
   AnaTools(TFile *f, Event *myEvent);
   virtual ~AnaTools();
 
-	//METODI PER ANALISI DATI
+  //METODI PER ANALISI DATI
   void BookingHistograms();
   void Process();
   void Clear();
-
-  //methods for analysis to be implemented here
+  //Print Histogram to File method
+  void FillHistogram(int directory);
   
  private:
 

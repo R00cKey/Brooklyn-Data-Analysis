@@ -29,7 +29,7 @@ AnaTools::~AnaTools(){};
 
 //METODO CHE PRENOTA GLI ISTOGRAMMI
 void AnaTools::BookingHistograms(){
-
+	outfile->cd();
 	for(int i=1; i<=20; i++){       
 	
 		//assegnamo il nome a ciascun evento                
@@ -39,18 +39,17 @@ void AnaTools::BookingHistograms(){
   	//booking&filling dei 16 istogrammi per ogni evento
   	TH1D *h[16]={(TH1D*)gDirectory->mkdir(&newEvent[0])}; //curly brackets perchè è un array di histo
   	gDirectory->cd(&newEvent[0]);
-  	for(int k=1; k<=event->getWaveforms().size();k++){
-  		TString name = Form("Event %d, Channel %d", i,k);
+  	
+  	for(unsigned int k=1; k<=16;k++){
+  		TString name = Form("Event_%d_Channel_%d", i,k);
   		TString title = Form("Event %d, Channel %d; time[ps]; Amplitude(mV)", i,k); //da controllare le unità di misura
   		h[k] = new TH1D(name, title, 1024, 0, 1024*SAMPLINGPERIOD);
-  		for(int j=0; j<NSAMPLING; j++)
+  		/*for(int j=1; j<=NSAMPLING; j++){
   			h[k]->SetBinContent(j, event->getWaveforms()[k]->getv_amplitude()[j]);
+  		}*/
   	}
-  	
-  	outfile->cd();
-  
+  gDirectory->cd("..");	
 	}
-
 }
 
 //METODO CHE FA ANALISI DATI E CALCOLA LA CARICA
@@ -60,7 +59,7 @@ void AnaTools::Process(){
 		double charge=0;
  		for(int k=0; k < NSAMPLING; k++)
  			charge +=  event->getWaveforms()[i]->getv_amplitude()[k]*SAMPLINGPERIOD;
- 		event->getWaveforms()[i]->setcharge(charge/50); //divido per R=50Ohm
+ 		event->getWaveforms()[i]->setcharge(charge/50); //divido per R=50 Ohm
  		tot_charge += event->getWaveforms()[i]->getcharge(); //il getter dovrebbe contenere la charge modificata dal setter che ho appena chiamato
 	}
 	event->settot_charge(tot_charge);
@@ -70,9 +69,25 @@ void AnaTools::Process(){
 //METODO CHE LIBERA MEMORIA
 void AnaTools::Clear(){
 
-
- 
-
   return;
 
+}
+
+
+void FillHistogram(int directory){
+
+	char dir[10]="Evento";
+  char *newEvent=strcat(dir, to_string(directory).c_str());
+
+  outfile->cd();	             
+  //booking&filling dei 16 istogrammi per ogni evento
+  TH1D *h=(TH1D*)gDirectory->cd(&newEvent[0]);
+
+	for(int k=1; k<=event->getWaveforms().size();k++){
+  		TString name = Form("Event %d, Channel %d", directory,k);
+  		h[k] = new TH1D(name, title, 1024, 0, 1024*SAMPLINGPERIOD);
+  		for(int j=0; j<NSAMPLING; j++)
+  			h[k]->SetBinContent(j, event->getWaveforms()[k]->getv_amplitude()[j]);
+  			h[k]->Draw();
+ 	}
 }
