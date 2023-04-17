@@ -24,7 +24,7 @@ class AnaTools{
   void Clear();
   //Print Histogram to File method
   void FillHistogram(int directory);
-  
+  void ChargeFill();
  private:
 
   TFile *outfile;

@@ -2,6 +2,7 @@
 #include <inttypes.h>
 #include <stdio.h>
 #include <TFile.h>
+#include <TH1.h>
 #include <TH1D.h>
 #include <TH2D.h>
 #include <TF1.h>
@@ -41,6 +42,7 @@ void AnaTools::BookingHistograms(){
   		TString name = Form("Hist_Channel_%d",k);
   		TString title = Form("Charge distribution channel %d; charge[]; Frequency(#)", k); //da controllare le unità di misura
   		hc_vector[k] = new TH1D(name, title, 100, 0, 100);
+  		hc_vector[k]->SetCanExtend(TH1::kAllAxes);
   		/*for(int j=1; j<=NSAMPLING; j++){
   			h[k]->SetBinContent(j, event->getWaveforms()[k]->getv_amplitude()[j]);
   		}*/
@@ -49,11 +51,11 @@ void AnaTools::BookingHistograms(){
 	
 	for(int i=1; i<=3; i++){       
 	
-		//assegnamo il nome a ciascun evento                
+		//assegniamo il nome a ciascun evento                
 		char dir[10]="Evento";
   	char *newEvent=strcat(dir, to_string(i).c_str());        
   	             
-  	//booking&filling dei 16 istogrammi per ogni evento
+  	//booking dei 16 istogrammi per ogni evento
   	gDirectory->mkdir(&newEvent[0]);
 
   	gDirectory->cd(&newEvent[0]);
@@ -95,16 +97,21 @@ void AnaTools::FillHistogram(int directory){
   outfile->cd();
   gDirectory->cd(&newEvent[0]);
 	
-
-  std::cout << &newEvent[0] << endl;
-  //h->SetBinContent(1, event->getWaveforms()[1-1]->getv_amplitude()[0]);
 	for(int k=1; k<=event->getWaveforms().size();k++){
   		for(int j=0; j<NSAMPLING; j++){
-  			//cout << "Dentro for" << endl;	//arriva qui e poi dà Segmentation Violation
-  			//h[j]->FillRandom("gaus",10000.);
   			hist_vector[directory-1][k-1]->SetBinContent(j+1, event->getWaveforms()[k-1]->getv_amplitude()[j]);
   		}
-  		//cout << "fuori for" << endl;	//arriva qui e poi dà Segmentation Violation
  		// hc_vector[]
  	}
+}
+
+
+void AnaTools::ChargeFill(){
+	outfile->cd();
+  gDirectory->cd("Hist_Cariche_Canali");
+	for(unsigned int i =0; i < event->getWaveforms().size(); i++){
+		hc_vector[i+1]->SetCanExtend(TH1::kAllAxes);
+		hc_vector[i+1]->Fill(event->getWaveforms()[i]->getcharge());
+  }
+  return;
 }
