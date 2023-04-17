@@ -97,7 +97,7 @@ void Event::Clear(){
 vector<Waveform*> Event::getWaveforms(){
        return myWaveforms;
 } 
-double Event::gettot_charge(){
+double Event::GetTot_charge(){
        return tot_charge;
 }
 double Event::gettime(){

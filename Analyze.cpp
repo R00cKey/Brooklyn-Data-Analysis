@@ -71,7 +71,6 @@ int main(int argc, char *argv[]){
     myEvent->ReadEvent(inname, &filepos);
     if(j<=3){myAnaTools->FillHistogram(j);}
     myAnaTools->Process();
-    myAnaTools->ChargeFill();
 
     myEvent->Clear();
     j++;

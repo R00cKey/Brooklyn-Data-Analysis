@@ -34,14 +34,15 @@ void AnaTools::BookingHistograms(){
 	gDirectory->cd("Hist_Total_Charge");
   	TString name = Form("Hist_total_charge");
   	TString title = Form("Total Charge distribution; charge[]; Frequency(#)"); //da controllare le unità di misura
-  	hctot = new TH1D(name, title, 100, 0, 100);
+  	hctot = new TH1D(name, title, 100, -0.1e-13, 0.1e-13);
+  	hctot->SetCanExtend(TH1::kAllAxes);
   	gDirectory->cd("..");
   	gDirectory->mkdir("Hist_Cariche_Canali");
   	gDirectory->cd("Hist_Cariche_Canali");
 	for(unsigned int k=1; k<=NCHANNELS;k++){
   		TString name = Form("Hist_Channel_%d",k);
   		TString title = Form("Charge distribution channel %d; charge[]; Frequency(#)", k); //da controllare le unità di misura
-  		hc_vector[k] = new TH1D(name, title, 100, 0, 100);
+  		hc_vector[k] = new TH1D(name, title, 100, -0.1e-13, 0.1e-13);
   		hc_vector[k]->SetCanExtend(TH1::kAllAxes);
   		/*for(int j=1; j<=NSAMPLING; j++){
   			h[k]->SetBinContent(j, event->getWaveforms()[k]->getv_amplitude()[j]);
@@ -77,9 +78,23 @@ void AnaTools::Process(){
  		for(int k=0; k < NSAMPLING; k++)
  			charge +=  event->getWaveforms()[i]->getv_amplitude()[k]*SAMPLINGPERIOD;
  		event->getWaveforms()[i]->setcharge(charge/50); //divido per R=50 Ohm
+ 		//cout << "Channel " << i << " charge: " << event->getWaveforms()[i]->getcharge() << endl;
  		tot_charge += event->getWaveforms()[i]->getcharge(); //il getter dovrebbe contenere la charge modificata dal setter che ho appena chiamato
 	}
 	event->settot_charge(tot_charge);
+
+	outfile->cd();
+  gDirectory->cd("Hist_Cariche_Canali");
+	for(unsigned int i =0; i < event->getWaveforms().size(); i++){
+		hc_vector[i+1]->SetCanExtend(TH1::kAllAxes);
+		hc_vector[i+1]->Fill(event->getWaveforms()[i]->getcharge());
+  }
+  gDirectory->cd("..");
+  /*gDirectory->cd("Hist_Total_Charge");
+  hctot->SetCanExtend(TH1::kAllAxes);
+  hctot->Fill(event->GetTot_charge());
+  gDirectory->cd("..");*/
+
   return;
 }
 
@@ -97,21 +112,10 @@ void AnaTools::FillHistogram(int directory){
   outfile->cd();
   gDirectory->cd(&newEvent[0]);
 	
-	for(int k=1; k<=event->getWaveforms().size();k++){
+	for(unsigned int k=1; k<=event->getWaveforms().size();k++){
   		for(int j=0; j<NSAMPLING; j++){
   			hist_vector[directory-1][k-1]->SetBinContent(j+1, event->getWaveforms()[k-1]->getv_amplitude()[j]);
   		}
  		// hc_vector[]
  	}
-}
-
-
-void AnaTools::ChargeFill(){
-	outfile->cd();
-  gDirectory->cd("Hist_Cariche_Canali");
-	for(unsigned int i =0; i < event->getWaveforms().size(); i++){
-		hc_vector[i+1]->SetCanExtend(TH1::kAllAxes);
-		hc_vector[i+1]->Fill(event->getWaveforms()[i]->getcharge());
-  }
-  return;
 }

@@ -23,7 +23,7 @@ class Event{
 
  //GETTERS
   vector<Waveform*> getWaveforms(); 
-  double gettot_charge();
+  double GetTot_charge();
   double gettime();
   
   //SETTERS
