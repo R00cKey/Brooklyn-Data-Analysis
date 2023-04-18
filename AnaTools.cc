@@ -42,8 +42,8 @@ void AnaTools::BookingHistograms(){
 	for(unsigned int k=1; k<=NCHANNELS;k++){
   		TString name = Form("Hist_Channel_%d",k);
   		TString title = Form("Charge distribution channel %d; charge[]; Frequency(#)", k); //da controllare le unità di misura
-  		hc_vector[k] = new TH1D(name, title, 100, -0.1e-13, 0.1e-13);
-  		hc_vector[k]->SetCanExtend(TH1::kAllAxes);
+  		hc_vector[k-1] = new TH1D(name, title, 100, -0.1e-13, 0.1e-13);
+  		hc_vector[k-1]->SetCanExtend(TH1::kAllAxes);
   		/*for(int j=1; j<=NSAMPLING; j++){
   			h[k]->SetBinContent(j, event->getWaveforms()[k]->getv_amplitude()[j]);
   		}*/
@@ -86,14 +86,14 @@ void AnaTools::Process(){
 	outfile->cd();
   gDirectory->cd("Hist_Cariche_Canali");
 	for(unsigned int i =0; i < event->getWaveforms().size(); i++){
-		hc_vector[i+1]->SetCanExtend(TH1::kAllAxes);
-		hc_vector[i+1]->Fill(event->getWaveforms()[i]->getcharge());
+		hc_vector[i]->SetCanExtend(TH1::kAllAxes);
+		hc_vector[i]->Fill(event->getWaveforms()[i]->getcharge());
   }
   gDirectory->cd("..");
-  /*gDirectory->cd("Hist_Total_Charge");
+  gDirectory->cd("Hist_Total_Charge");
   hctot->SetCanExtend(TH1::kAllAxes);
   hctot->Fill(event->GetTot_charge());
-  gDirectory->cd("..");*/
+  gDirectory->cd("..");
 
   return;
 }
