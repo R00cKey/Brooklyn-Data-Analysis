@@ -14,23 +14,36 @@ class AnaTools{
   
  public:
   
-  //COSTRUTTORE E DISTRUTTORE
+  //Constructor and Destructor
   AnaTools(TFile *f, Event *myEvent);
   virtual ~AnaTools();
 
-  //METODI PER ANALISI DATI
+  //Getters
+  double getGain();
+  double getQE();
+  double getEtr();
+
+  //Data Analysis Methods
   void BookingHistograms();
   void Process();
-  void Clear();
+  double getLightYield(double Q, double gain, double qe, double etr); //qe: Quantum Efficiency etr: Transimission efficiency
   //Print Histogram to File method
   void FillHistogram(int directory);
+  void Clear();
+
+
  private:
 
   TFile *outfile;
   Event *event;
-  TH1D* hist_vector[3][16];
-  TH1D* hc_vector[16];
+  TH1D* hist_vector[3][NCHANNELS];
+  TH1D* hc_vector[NCHANNELS];
   TH1D *hctot;
+  TH1D *hly_vector[NCHANNELS];
+  TH1D *hlytot;
+  double gain_=1.e8;
+  double qe_=14.e-2;
+  double etr_=4.88;
 };
 
 #endif
