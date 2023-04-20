@@ -16,7 +16,7 @@
 #include <fstream>
 #include <sstream>
 #include <vector>
-#define NSAMPLING 1024
+//#define NSAMPLING 1024
 
 using namespace std;
 

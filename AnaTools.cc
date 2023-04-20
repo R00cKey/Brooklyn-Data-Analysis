@@ -29,8 +29,7 @@ AnaTools::AnaTools(TFile *f, Event *myEvent){
 
 //Destructor
 AnaTools::~AnaTools(){
-
-  return;
+	return;
 
 }
 //Getters
@@ -78,15 +77,11 @@ void AnaTools::BookingHistograms(){
 	
 	for(int i=1; i<=3; i++){       
 	
-		//assegniamo il nome a ciascun evento                
+		//WAVEFORMS HISTOGRAMS                
 		char dir[10]="Evento";
   	char *newEvent=strcat(dir, to_string(i).c_str());        
-  	             
-  	//booking dei 16 istogrammi per ogni evento
   	gDirectory->mkdir(&newEvent[0]);
-
   	gDirectory->cd(&newEvent[0]);
-
   	for(unsigned int k=1; k<=NCHANNELS;k++){
   		TString name = Form("Event_%d_Channel_%d", i,k);
   		TString title = Form("Event %d, Channel %d; time[s]; Amplitude(V)", i,k);
@@ -110,6 +105,7 @@ void AnaTools::Process(){
 	event->settot_charge(tot_charge);
 
 	outfile->cd();
+	
 	//CHARGE HISTOGRAMS FILLING
   gDirectory->cd("Hist_Cariche_Canali");
 	for(unsigned int i =0; i < event->getWaveforms().size(); i++){
@@ -121,6 +117,7 @@ void AnaTools::Process(){
   hctot->SetCanExtend(TH1::kAllAxes);
   hctot->Fill(event->GetTot_charge());
   gDirectory->cd("..");
+  
 	//LIGHT YIELD HISTOGRAMS FILLING
   gDirectory->cd("Hist_Channels_Light_Yield");
 	for(unsigned int i =0; i < event->getWaveforms().size(); i++){

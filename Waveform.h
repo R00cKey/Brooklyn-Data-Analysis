@@ -7,8 +7,9 @@
 #include <TH1D.h>
 
 
-#define NSAMPLING 1024 //to be checked: sembra di sì
+#define NSAMPLING 1024 
 #define SAMPLINGPERIOD 312.5e-12
+#define NCHANNELS 16
 
 using namespace std;
 

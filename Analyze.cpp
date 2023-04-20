@@ -46,7 +46,7 @@ int main(int argc, char *argv[]){
   TFile *f = new TFile(outname.data(), "RECREATE");
   f->cd();
 
-  
+
   //create an Event object
   Event * myEvent = new Event();
 
