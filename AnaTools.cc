@@ -63,6 +63,16 @@ void AnaTools::BookingHistograms(){
   hTOF_cfm = new TH1D(name, title, 100, -1.e-9, 1.e-9);
   hTOF_cfm->SetCanExtend(TH1::kAllAxes);
   gDirectory->cd("..");
+  
+  gDirectory->mkdir("Hist_TOF_ft");
+  gDirectory->cd("Hist_TOF_ft");
+  name = "Hist_TOF_ft";
+  title = ("Distribution of TOF wrt mean TOF of ch 0,1,14,15 using a fixed threshold; Time of flight[s]; Frequency(#)");
+  hTOF_ft = new TH1D(name, title, 100, -1.e-9, 1.e-9);
+  hTOF_ft->SetCanExtend(TH1::kAllAxes);
+  gDirectory->cd("..");
+  
+  
   //LIGHT YIELD HISTOGRAMS
   gDirectory->mkdir("Hist_Total_Light_Yield");
   gDirectory->cd("Hist_Total_Light_Yield");
