@@ -41,9 +41,9 @@ class AnaTools{
   TH1D *hctot;
   TH1D *hly_vector[NCHANNELS];
   TH1D *hlytot;
-  double gain_=1.e8;
+  double gain_=1.e7;
   double qe_=14.e-2;
-  double etr_=4.88;
+  double etr_=4.88e-2;
 };
 
 #endif

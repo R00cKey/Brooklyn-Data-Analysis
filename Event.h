@@ -7,8 +7,6 @@
 #include <TH1D.h>
 #include "Waveform.h"
 
-//#define NCHANNELS 16
-
 using namespace std;
 
 class Event{

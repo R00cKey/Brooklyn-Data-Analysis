@@ -17,8 +17,6 @@
 #include <math.h>
 
 
-#define NEVENTS  20; //bisogna prenderlo dal file di output
-
 using namespace std;
 
 //Constructor
@@ -62,7 +60,7 @@ void AnaTools::BookingHistograms(){
   gDirectory->cd("Hist_Total_Light_Yield");
   name = Form("Hist_Total_Light_Yield");
   title = Form("Hodoscope Light Yield Distribution; LY[# produced photons/Energy loss]; Frequency(#)");
-  hlytot = new TH1D(name, title, 100, -0.1e-21, 0.1e-21);
+  hlytot = new TH1D(name, title, 100, -1.e2, 1.e2);
   hlytot->SetCanExtend(TH1::kAllAxes);
   gDirectory->cd("..");
   gDirectory->mkdir("Hist_Channels_Light_Yield");
@@ -150,5 +148,5 @@ void AnaTools::FillHistogram(int directory){
 
 double AnaTools::getLightYield(double Q, double gain, double qe, double etr){
 	//NOTA TEMPORANEA: DOPO DOVREMO IMPLEMENTARE L'ENERGIA RILASCIATA DAL MUONE. PER ORA ly=ly*E
-	return Q/(gain*qe*etr);
+	return Q/(gain*qe*etr*ECHARGE);
 }
