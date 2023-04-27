@@ -55,6 +55,14 @@ void AnaTools::BookingHistograms(){
   		hc_vector[k-1]->SetCanExtend(TH1::kAllAxes);
   	}
   gDirectory->cd("..");
+  //TOF HISTOGRAMS
+  gDirectory->mkdir("Hist_TOF_cfm");
+  gDirectory->cd("Hist_TOF_cfm");
+  name = "Hist_TOF_cfm";
+  title = ("Distribution of TOF wrt mean TOF of ch 0,1,14,15 using Constant Fraction Method; Time of flight[s]; Frequency(#)");
+  hTOF_cfm = new TH1D(name, title, 100, -1.e-9, 1.e-9);
+  hTOF_cfm->SetCanExtend(TH1::kAllAxes);
+  gDirectory->cd("..");
   //LIGHT YIELD HISTOGRAMS
   gDirectory->mkdir("Hist_Total_Light_Yield");
   gDirectory->cd("Hist_Total_Light_Yield");
@@ -149,4 +157,37 @@ void AnaTools::FillHistogram(int directory){
 double AnaTools::getLightYield(double Q, double gain, double qe, double etr){
 	//NOTA TEMPORANEA: DOPO DOVREMO IMPLEMENTARE L'ENERGIA RILASCIATA DAL MUONE. PER ORA ly=ly*E
 	return Q/(gain*qe*etr*ECHARGE);
+}
+
+
+
+
+
+void AnaTools::TOF(){
+	double V_peak[16];
+	double t_in_cfm[16];
+	double tpeak[16];
+		for(unsigned int i =0; i < event->getWaveforms().size(); i++){
+			V_peak[i]=0;
+			for(int k=0; k < NSAMPLING; k++){
+				if(V_peak[i]>event->getWaveforms()[i]->getv_amplitude()[k]){
+					V_peak[i]=event->getWaveforms()[i]->getv_amplitude()[k];
+					tpeak[i]=k;
+				}
+			//	cout << "tpeak " << tpeak[i] << endl;
+			}
+			
+			t_in_cfm[i]=tpeak[i];
+			while(event->getWaveforms()[i]->getv_amplitude()[int(t_in_cfm[i])]<V_peak[i]*0.3){
+			t_in_cfm[i]=t_in_cfm[i]-1;
+		 }
+		
+		}
+	double TOF_mean_cfm=(t_in_cfm[0]+t_in_cfm[1]+t_in_cfm[14]+t_in_cfm[15])*0.25*SAMPLINGPERIOD;
+	gDirectory->cd("Hist_TOF_cfm");
+	for(int l=2;l<14;l++){
+		t_in_cfm[l]=t_in_cfm[l]*SAMPLINGPERIOD-TOF_mean_cfm;
+		hTOF_cfm->Fill(t_in_cfm[l]);
+	}
+	gDirectory->cd("..");
 }
