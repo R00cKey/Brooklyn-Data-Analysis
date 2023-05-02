@@ -41,8 +41,9 @@ class AnaTools{
   TH1D *hctot;
   TH1D *hly_vector[NCHANNELS];
   TH1D *hlytot;
-  TH1D *hTOF_cfm;
+  TH1D *hTOF_cfm[NCHANNELS];
   TH1D *hTOF_ft;
+  TF1 *fit_TOF1[12];
   double gain_=1.e7;
   double qe_=14.e-2;
   double etr_=4.88e-2;

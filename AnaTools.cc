@@ -15,6 +15,7 @@
 #include <string.h>
 #include <TMinuit.h>
 #include <math.h>
+#include <TAxis.h>
 
 
 using namespace std;
@@ -55,22 +56,30 @@ void AnaTools::BookingHistograms(){
   		hc_vector[k-1]->SetCanExtend(TH1::kAllAxes);
   	}
   gDirectory->cd("..");
-  //TOF HISTOGRAMS
-  gDirectory->mkdir("Hist_TOF_cfm");
-  gDirectory->cd("Hist_TOF_cfm");
-  name = "Hist_TOF_cfm";
-  title = ("Distribution of TOF wrt mean TOF of ch 0,1,14,15 using Constant Fraction Method; Time of flight[s]; Counts (#)");
-  hTOF_cfm = new TH1D(name, title, 500, -1.e-7, 1.e-7);
-  hTOF_cfm->SetCanExtend(TH1::kAllAxes);
-  gDirectory->cd("..");
   
-  gDirectory->mkdir("Hist_TOF_ft");
-  gDirectory->cd("Hist_TOF_ft");
-  name = "Hist_TOF_ft";
-  title = ("Distribution of TOF wrt mean TOF of ch 0,1,14,15 using a fixed threshold; Time of flight[s]; Counts (#)");
-  hTOF_ft = new TH1D(name, title, 500, -1.e-7, 1.e-7);
-  hTOF_ft->SetCanExtend(TH1::kAllAxes);
-  gDirectory->cd("..");
+  
+  //TOF HISTOGRAMS
+  for(int i=2;i<14;i++){
+  	char dir[17]="Hist_TOF_cfm_ch";
+	  char *newHist=strcat(dir, to_string(i).c_str());        
+ 		gDirectory->mkdir(&newHist[0]);
+ 		gDirectory->cd(&newHist[0]);
+
+  	TString name = Form("Hist_TOF_cfm_ch%d",i);
+  	TString title = Form("Distribution of TOF of ch%d wrt mean TOF of ch 0,1,14,15 using Constant Fraction Method; Time of flight[s]; Counts (#)",i);
+  	hTOF_cfm[i] = new TH1D(name, title, 500, -1.e-7, 1.e-7);
+  	hTOF_cfm[i]->SetCanExtend(TH1::kAllAxes);
+  	gDirectory->cd("..");
+  	
+  	/*gDirectory->mkdir("Hist_TOF_ft");
+  	gDirectory->cd("Hist_TOF_ft");
+  	name = "Hist_TOF_ft";
+  	title = ("Distribution of TOF wrt mean TOF of ch 0,1,14,15 using a fixed threshold; Time of flight[s]; Counts (#)");
+  	hTOF_ft = new TH1D(name, title, 500, -1.e-7, 1.e-7);
+  	hTOF_ft->SetCanExtend(TH1::kAllAxes);
+  	gDirectory->cd("..");*/
+  	
+  	}
   
   
   //LIGHT YIELD HISTOGRAMS
@@ -194,45 +203,51 @@ void AnaTools::TOF(){
 		
 		}
 	double TOF_mean_cfm=(t_in_cfm[0]+t_in_cfm[1]+t_in_cfm[14]+t_in_cfm[15])*0.25*SAMPLINGPERIOD;
-	gDirectory->cd("Hist_TOF_cfm");
+	
 	for(int l=2;l<14;l++){
+		
 		t_in_cfm[l]=t_in_cfm[l]*SAMPLINGPERIOD-TOF_mean_cfm;
-		hTOF_cfm->Fill(t_in_cfm[l]);
+		hTOF_cfm[l]->Fill(t_in_cfm[l]);
 	}
-	gDirectory->cd("..");
 	
 	
 	
 }
+
 
 
 
 
 
 void AnaTools::f_TOF(){
+
+	for(int l=2;l<14;l++){
 	
-	//gDirectory->("Hist_TOF_cfm");
-	TF1 *fit_TOF1 = new TF1("fit_TOF1","gaus(0)+gaus(3)+[6]",-0.5,0.5);
-	fit_TOF1 ->SetParameter(0,hTOF_cfm->GetBinContent(hTOF_cfm->GetMaximumBin())*1.01);
-	fit_TOF1 ->SetParameter(1,hTOF_cfm->GetBinCenter(hTOF_cfm->GetMaximumBin()));
-	fit_TOF1 ->SetParameter(2,hTOF_cfm->GetStdDev());
-	fit_TOF1 ->SetParameter(3,hTOF_cfm->GetBinContent(hTOF_cfm->GetMaximumBin())-100);
-	fit_TOF1 ->SetParameter(4,hTOF_cfm->GetBinCenter(hTOF_cfm->GetMaximumBin()));
-	fit_TOF1 ->SetParameter(5,hTOF_cfm->GetStdDev()*1.5);
-	
-	
-	hTOF_cfm->Fit(fit_TOF1,"R");
-	double chi2_1= fit_TOF1->GetChisquare();
-	cout << "chi2_1= " << chi2_1 << endl;
-	
-	/*TF1 *fit_TOF2 = new TF1("fit_TOF2","gaus(0)",-1.e-7,1.e-7);
-	fit_TOF2 ->SetParameter(0,100);
-	fit_TOF2 ->SetParameter(1,hTOF_cfm->GetBinCenter(hTOF_cfm->GetMaximumBin()));
-	fit_TOF2 ->SetParameter(2,hTOF_cfm->GetStdDev()+1.e-6);
-	fit_TOF2->SetLineColor(kBlue);
-	hTOF_cfm->Fit(fit_TOF2,"+","R");
-	gDirectory->cd("..");*/
-	
-	hTOF_cfm->SetAxisRange(-0.05e-6,0.05e-6);
-	
+		
+		fit_TOF1[l-2] = new TF1("fit_TOF","gaus(0)+gaus(3)+[6]",-0.5,0.5);
+		fit_TOF1[l-2] ->SetParameter(0,hTOF_cfm[l]->GetBinContent(hTOF_cfm[l]->GetMaximumBin()));
+		fit_TOF1[l-2] ->SetParameter(1,hTOF_cfm[l]->GetBinCenter(hTOF_cfm[l]->GetMaximumBin()));
+		fit_TOF1[l-2] ->SetParameter(2,hTOF_cfm[l]->GetStdDev());
+		fit_TOF1[l-2] ->SetParLimits(2,1e-9,2.2e-9); 
+		fit_TOF1[l-2] ->SetParameter(3,hTOF_cfm[l]->GetBinContent(hTOF_cfm[l]->GetMaximumBin()));
+		fit_TOF1[l-2] ->SetParameter(4,hTOF_cfm[l]->GetBinCenter(hTOF_cfm[l]->GetMaximumBin()));
+		fit_TOF1[l-2] ->SetParameter(5,hTOF_cfm[l]->GetStdDev());
+		fit_TOF1[l-2] ->SetParLimits(5,2e-9,4e-9); 
+		fit_TOF1[l-2]	->SetNpx(10000);
+		
+		hTOF_cfm[l]->Fit(fit_TOF1[l-2],"R");
+		
+	 //Usare SetRangeUser per zoommare
+ 	
+		
+		hTOF_cfm[l]->SetAxisRange(-0.05e-6,0.05e-6);
+		//fit_TOF1[l-2]->SetRange(-30e-9,30e-9);
+		
+	}
 }
+
+
+
+
+
+
