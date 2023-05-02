@@ -76,6 +76,8 @@ int main(int argc, char *argv[]){
     j++;
 
   }
+  
+  myAnaTools->f_TOF();
 	
   cout<< "No. Events read:" << j-1 << endl; 
  

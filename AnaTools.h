@@ -31,7 +31,7 @@ class AnaTools{
   void FillHistogram(int directory);
   void Clear();
 	void TOF();
-
+	void f_TOF();
  private:
 
   TFile *outfile;
