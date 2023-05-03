@@ -10,7 +10,7 @@
 #define NSAMPLING 1024 
 #define SAMPLINGPERIOD 312.5e-12
 #define NCHANNELS 16
-#define ECHARGE -1.6e-19
+#define ECHARGE 1.6e-19
 
 using namespace std;
 

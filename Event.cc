@@ -29,7 +29,7 @@ Event::Event(){
 Event::~Event(){}
 
 
-void Event::ReadEvent(string inname, int* pos){
+void Event::ReadEvent(string inname,unsigned long int* pos){
 
   ifstream myReadFile; //File "inname.dat" stream
   string fileline; //A line of the File

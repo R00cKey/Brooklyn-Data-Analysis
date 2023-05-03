@@ -24,10 +24,9 @@ int main(int argc, char *argv[]){
   string inname("in.dat");
   string outname("out.root");
 
-  int nevent=1e9;
-  int filepos=0;
-  int filelength;
-  int j=1;
+  int nevent=1;
+  unsigned long int filepos=0;
+  unsigned long int filelength;
   
   for(int i=0; i< argc; i++){
     if(strcmp("-in",argv[i])==0){
@@ -69,17 +68,16 @@ int main(int argc, char *argv[]){
   //loop on events, read an event until file is finished
   while(filepos<filelength){
     myEvent->ReadEvent(inname, &filepos);
-    if(j<=3){myAnaTools->FillHistogram(j);}
+    if(nevent<=3){myAnaTools->FillHistogram(nevent);}
     myAnaTools->Process();
 		myAnaTools->TOF();
     myEvent->Clear();
-    j++;
-
+    nevent++;
+    if(nevent%100==0){cout << "Reached Event No. :" << nevent << endl;}
   }
-  
   myAnaTools->f_TOF();
 	
-  cout<< "No. Events read:" << j-1 << endl; 
+  cout<< "Total No. Events read:" << nevent-1 << endl; 
  
   infile.close();
   
@@ -87,7 +85,6 @@ int main(int argc, char *argv[]){
   f->Write();
   f->Close();
 
-  //cout<< "test" << j-1 << endl;
   delete myAnaTools;
 
 

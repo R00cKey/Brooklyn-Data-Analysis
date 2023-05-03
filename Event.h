@@ -16,7 +16,7 @@ class Event{
   Event();
   virtual ~Event();
 
-  void ReadEvent(string inname, int* pos);
+  void ReadEvent(string inname,unsigned long int* pos);
   void Clear();
 
  //GETTERS
