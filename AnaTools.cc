@@ -44,7 +44,7 @@ void AnaTools::BookingHistograms(){
 	gDirectory->mkdir("Hist_Total_Charge");
 	gDirectory->cd("Hist_Total_Charge");
   TString name = Form("Hist_total_charge");
-  TString title = Form("Total Charge distribution; charge[]; Counts(#)");
+  TString title = Form("Total Charge distribution; charge[C]; Counts(#)");
   hctot = new TH1D(name, title, 500, -20.e-11, 20.e-11);
   gDirectory->cd("..");
   gDirectory->mkdir("Hist_Channels_Charge");
@@ -64,7 +64,7 @@ void AnaTools::BookingHistograms(){
  		gDirectory->cd(&newHist[0]);
 
   	TString name = Form("Hist_TOF_cfm_ch%d",i);
-  	TString title = Form("Distribution of TOF of ch%d wrt mean TOF of ch 0,1,14,15 using Constant Fraction Method; Time of flight[s]; Counts (#)",i);
+  	TString title = Form("Distribution of TOF of ch%d wrt mean TOF of ch 0,1,14,15 using Constant Fraction Method; Time of arrival[s]; Counts (#)",i);
   	hTOF_cfm[i] = new TH1D(name, title, 500, -1.e-7, 1.e-7);
   	gDirectory->cd("..");
   	

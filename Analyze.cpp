@@ -27,7 +27,8 @@ int main(int argc, char *argv[]){
   int nevent=1;
   unsigned long int filepos=0;
   unsigned long int filelength;
-  
+
+
   for(int i=0; i< argc; i++){
     if(strcmp("-in",argv[i])==0){
       inname.assign(argv[++i]);
@@ -73,8 +74,9 @@ int main(int argc, char *argv[]){
 		myAnaTools->TOF();
     myEvent->Clear();
     nevent++;
-    if(nevent%100==0){cout << "Reached Event No. :" << nevent << endl;}
+    if(nevent%100==0){cout << "\r" <<"Processed " << 100*filepos/filelength << "%" << " of file" <<flush;}
   }
+  cout << " " << endl;
   myAnaTools->f_TOF();
 	
   cout<< "Total No. Events read:" << nevent-1 << endl; 
