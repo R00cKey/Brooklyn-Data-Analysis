@@ -65,7 +65,7 @@ int main(int argc, char *argv[]){
   }
   infile.seekg (0, infile.end);
   filelength = infile.tellg();
-
+	myAnaTools->Pedestal("gain.dat");
   //loop on events, read an event until file is finished
   while(filepos<filelength){
     myEvent->ReadEvent(inname, &filepos);

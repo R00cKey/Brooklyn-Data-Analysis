@@ -17,7 +17,6 @@
 #include <math.h>
 #include <TAxis.h>
 
-
 using namespace std;
 
 //Constructor
@@ -54,7 +53,20 @@ void AnaTools::BookingHistograms(){
   		TString title = Form("Charge distribution channel %d; charge[C]; Counts(#)", k-1);
   		hc_vector[k-1] = new TH1D(name, title, 500, -2.e-11, 2.e-11);
   	}
+
   gDirectory->cd("..");
+
+  
+  gDirectory->mkdir("Hist_Channels_Charge_shifted");
+  gDirectory->cd("Hist_Channels_Charge_shifted");
+	for(unsigned int k=1; k<=NCHANNELS;k++){
+  		TString name = Form("Hist_Channel_%d_shifted",k-1);
+  		TString title = Form("Charge distribution channel %d shifted of pedestal mean value; charge[C]; Counts(#)", k-1);
+  		hc_vector_shifted[k-1] = new TH1D(name, title, 500, -2.e-11, 2.e-11);
+  	}
+  gDirectory->cd("..");
+  
+  
    
   //TOF HISTOGRAMS
   for(int i=2;i<14;i++){
@@ -128,6 +140,7 @@ void AnaTools::Process(){
   gDirectory->cd("Hist_Channels_Charge");
 	for(unsigned int i =0; i < event->getWaveforms().size(); i++){
 		hc_vector[i]->Fill(event->getWaveforms()[i]->getcharge());
+			hc_vector_shifted[i]->Fill(event->getWaveforms()[i]->getcharge()-ped_mean[i]);
   }
   gDirectory->cd("..");
   gDirectory->cd("Hist_Total_Charge");
@@ -237,6 +250,36 @@ void AnaTools::f_TOF(){
 		
 	}
 }
+
+void AnaTools::Pedestal(string inname){
+	ifstream infile; //File "inname.dat" stream
+  string fileline; //A line of the File
+	int ch=0;
+	infile.open(inname);// file containing numbers in 5 columns
+	getline(infile,fileline);
+     if(infile.fail()) // checks to see if file opended 
+   	 { 
+		  	cout << "error= input file of pedestal not found." << endl; 
+   	 } 
+		  while(!infile.eof()) // reads file to end of file
+      { 
+ 						
+						getline(infile,fileline);
+      			istringstream ss(fileline);
+       		 	ss >> ped_mean[ch];
+       		 	ss >> ped_mean[ch];
+       		 	ss >> ped_sigma[ch];
+            ss >> mean2[ch];
+            ss >> sigma2[ch];
+            ch++;
+      }
+  infile.close();
+  /*for(int i=0;i<16;i++)
+           { 
+   	cout << "\tped mean= "<< ped_mean[i] << "\tped sigma= " << ped_sigma[i] << endl;
+   	}*/
+} 
+
 
 
 
