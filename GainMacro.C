@@ -1,10 +1,10 @@
 void GainMacro(){
 
 	TFile *file=new TFile("outputGain.root", "READ");
-	TFile *outfile=new TFile("gain.root", "RECREATE");
-	file->cd();
-	outfile->cd();
-	gDirectory->cd("Hist_Channels_Charge");	
+	TFile *outfile=new TFile("gainfits.root", "RECREATE");
+	ofstream infofile;
+	infofile.open("gain.dat");
+	infofile<< "CHANNEL\tMEAN[Gaus1]\tSTDDEV[Gaus1]\tMEAN[Gaus2-Gaus1]\tSTDDEV[Gaus2]\n";	
 	for(int k=0;k<16;k++){
 	file->cd();
 	gDirectory->cd("Hist_Channels_Charge");	
@@ -27,6 +27,10 @@ void GainMacro(){
 	h->Fit(fun, "R"); //In alternativa a fun "FitFun1"
 	outfile->cd();
 	h->Write();
+
+	infofile << k << "\t" << fun->GetParameter(1) << "\t" << fun->GetParameter(2) << "\t" << fun->GetParameter(4)-fun->GetParameter(1) << "\t" << fun->GetParameter(5) << endl;
+
 	}
+	infofile.close();
 	outfile->Close();
 }
