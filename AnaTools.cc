@@ -207,7 +207,6 @@ void AnaTools::TOF(){
 
 
 
-
 void AnaTools::f_TOF(){
 
 	for(int l=2;l<14;l++){
@@ -217,7 +216,7 @@ void AnaTools::f_TOF(){
 		fit_TOF1[l-2] ->SetParameter(0,hTOF_cfm[l]->GetBinContent(hTOF_cfm[l]->GetMaximumBin()));
 		fit_TOF1[l-2] ->SetParameter(1,hTOF_cfm[l]->GetBinCenter(hTOF_cfm[l]->GetMaximumBin()));
 		fit_TOF1[l-2] ->SetParameter(2,hTOF_cfm[l]->GetStdDev());
-		fit_TOF1[l-2] ->SetParLimits(2,1e-9,2.2e-9); 
+		fit_TOF1[l-2] ->SetParLimits(2,0.5e-9,2.2e-9); 
 		fit_TOF1[l-2] ->SetParameter(3,hTOF_cfm[l]->GetBinContent(hTOF_cfm[l]->GetMaximumBin()));
 		fit_TOF1[l-2] ->SetParameter(4,hTOF_cfm[l]->GetBinCenter(hTOF_cfm[l]->GetMaximumBin()));
 		fit_TOF1[l-2] ->SetParameter(5,hTOF_cfm[l]->GetStdDev());
@@ -232,9 +231,12 @@ void AnaTools::f_TOF(){
 		hTOF_cfm[l]->SetAxisRange(-0.05e-6,0.05e-6);
 		//fit_TOF1[l-2]->SetRange(-30e-9,30e-9);
 		
+	 /*auto* legend = new TLegend(0.65,0.7,0.89,0.89);
+   legend->AddEntry(fit_TOF1[l-2],"Fit result", "L");
+   legend->Draw();*/
+		
 	}
 }
-
 
 
 
