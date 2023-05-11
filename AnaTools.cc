@@ -23,6 +23,32 @@ using namespace std;
 AnaTools::AnaTools(TFile *f, Event *myEvent){ 
   outfile = f;
   event = myEvent;
+
+  ifstream qeinfile; //File "QE.dat" stream
+  string fileline; //A line of the File
+
+	int ch=0;
+	qeinfile.open("QE.dat");// file containing numbers in 5 columns
+	getline(qeinfile,fileline);
+     if(qeinfile.fail()) // checks to see if file opended 
+   	 { 
+		  	cout << "error= input file of pedestal not found." << endl; 
+   	 } 
+		  while(!qeinfile.eof()) // reads file to end of file
+      { 
+ 						
+						getline(qeinfile,fileline);
+      			istringstream ss(fileline);
+       		 	ss >> qe_[ch];
+       		 	ss >> qe_[ch];
+            ch++;
+      }
+	qeinfile.close();
+
+  //INITIALIZING TRAPPING EFFICIENCY
+  for(int k=0; k<16; k++){
+		etr_[k]=4.88e-2;
+	}
 }
 
 //Destructor
@@ -31,9 +57,9 @@ AnaTools::~AnaTools(){
 
 }
 //Getters
-double AnaTools::getGain(){return gain_;}
-double AnaTools::getQE(){return qe_;}
-double AnaTools::getEtr(){return etr_;}
+double AnaTools::getGain(int channel){return gain_[channel];}
+double AnaTools::getQE(int channel){return qe_[channel];}
+double AnaTools::getEtr(int channel){return etr_[channel];}
 
 
 void AnaTools::BookingHistograms(){
@@ -166,12 +192,12 @@ void AnaTools::Process(){
 	//LIGHT YIELD HISTOGRAMS FILLING
   gDirectory->cd("Hist_Channels_Light_Yield");
 	for(unsigned int i =0; i < event->getWaveforms().size(); i++){
-		hly_vector[i]->Fill(getLightYield(event->getWaveforms()[i]->getcharge(), getGain(), getQE(), getEtr()));
+		hly_vector[i]->Fill(getLightYield(event->getWaveforms()[i]->getcharge()-ped_mean[i], getGain(i), getQE(i), getEtr(i)));
   }
-  gDirectory->cd("..");
+  /*gDirectory->cd("..");
   gDirectory->cd("Hist_Total_Light_Yield");
   hlytot->Fill(getLightYield(event->GetTot_charge(), getGain(), getQE(), getEtr()));
-  gDirectory->cd("..");
+  gDirectory->cd("..");*/
 
 
   return;
@@ -304,15 +330,14 @@ void AnaTools::Pedestal(string inname){
             ss >> sigma2[ch];
             ch++;
       }
+  //EVALUATING GAIN    
+  for(int ch=0; ch<NCHANNELS; ch++){
+  	gain_[ch]=mean2[ch]/ECHARGE;
+  }
   infile.close();
+
   /*for(int i=0;i<16;i++)
            { 
    	cout << "\tped mean= "<< ped_mean[i] << "\tped sigma= " << ped_sigma[i] << endl;
    	}*/
 } 
-
-
-
-
-
-

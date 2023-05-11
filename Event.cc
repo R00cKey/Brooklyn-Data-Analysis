@@ -54,7 +54,7 @@ void Event::ReadEvent(string inname,unsigned long int* pos){
       while (getline(stream, temp, ' ')) {    //Values in line are separated by space (' ')
       v.push_back(temp); //add value (still as string) to vector<string> temp
       }
-      if(v.size()==NSAMPLING+1){v.erase(v.end());}    //Sometimes, the program will a read an empty entry at the end. Delete that entry
+      if(v.size()==NSAMPLING+1){v.erase(v.end());}//Sometimes, the program will a read an empty entry at the end. Delete that entry
 
       for (unsigned int i = 0; i < v.size(); i++) { //Convert vector<string> to array of double
         va[i]=stod(v[i]);

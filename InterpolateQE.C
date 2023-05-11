@@ -99,4 +99,13 @@ void InterpolateQE(){
  	else{outfile << k << "\t" << getIntegral(steps1, spectrum1) <<"\n";}
  	}
  	
+ 	x1.clear();
+	x2.clear();
+  	y2.clear();
+  	x3.clear();
+  	y3.clear();
+  	steps1.clear();
+  	steps2.clear();
+  	spectrum1.clear();
+  	spectrum2.clear();
 }

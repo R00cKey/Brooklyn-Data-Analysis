@@ -21,9 +21,9 @@ class AnaTools{
   virtual ~AnaTools();
 
   //Getters
-  double getGain();
-  double getQE();
-  double getEtr();
+  double getGain(int i);
+  double getQE(int i);
+  double getEtr(int i);
 
   //Data Analysis Methods
   void BookingHistograms();
@@ -51,13 +51,13 @@ class AnaTools{
   TH1D *hTOF_ft;
   TF1 *fit_TOF_cfm[12];
   TF1 *fit_TOF_cfm_cut[12];
-  double gain_=1.e7;
-  double qe_=14.e-2;
-  double etr_=4.88e-2;
+  double gain_[16];
+  double qe_[16];
+  double etr_[16];
   double ped_mean[16];
-	double ped_sigma[16];
-	double mean2[16];
-	double sigma2[16];
+  double ped_sigma[16];
+  double mean2[16];
+  double sigma2[16];
 };
 
 #endif
