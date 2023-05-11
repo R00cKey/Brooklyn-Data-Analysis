@@ -66,6 +66,14 @@ void AnaTools::BookingHistograms(){
   	}
   gDirectory->cd("..");
   
+  gDirectory->mkdir("Hist_Channels_Charge_shifted_cut");
+  gDirectory->cd("Hist_Channels_Charge_shifted_cut");
+	for(unsigned int k=1; k<=NCHANNELS;k++){
+  		TString name = Form("Hist_Channel_%d_shifted_cut",k-1);
+  		TString title = Form("Charge distribution channel %d shifted of pedestal mean value and cut; charge[C]; Counts(#)", k-1);
+  		hc_vector_shifted_cut[k-1] = new TH1D(name, title, 500, -2.e-11, 2.e-11);
+  	}
+  gDirectory->cd("..");
   
    
   //TOF HISTOGRAMS
@@ -76,9 +84,16 @@ void AnaTools::BookingHistograms(){
  		gDirectory->cd(&newHist[0]);
 
   	TString name = Form("Hist_TOF_cfm_ch%d",i);
-  	TString title = Form("Distribution of TOF of ch%d wrt mean TOF of ch 0,1,14,15 using Constant Fraction Method; Time of arrival[s]; Counts (#)",i);
+  	TString title = Form("Distribution of time of arrival of ch%d wrt mean time of arrival of ch 0,1,14,15 using Constant Fraction Method; Time of arrival[s]; Counts (#)",i);
   	hTOF_cfm[i] = new TH1D(name, title, 500, -1.e-7, 1.e-7);
+
+  	name = Form("Hist_TOF_cfm_ch%d_cut",i);
+  	title = Form("Distribution of time of arrival of ch%d wrt mean time of arrival of ch 0,1,14,15 using Constant Fraction Method (with no pedastal); Time of arrival[s]; Counts (#)",i);
+  	hTOF_cfm_cut[i] = new TH1D(name, title, 500, -1.e-7, 1.e-7);
   	gDirectory->cd("..");
+  	
+  	
+  	
   	
   	/*gDirectory->mkdir("Hist_TOF_ft");
   	gDirectory->cd("Hist_TOF_ft");
@@ -137,12 +152,13 @@ void AnaTools::Process(){
 	outfile->cd();
 	
 	//CHARGE HISTOGRAMS FILLING
-  gDirectory->cd("Hist_Channels_Charge");
 	for(unsigned int i =0; i < event->getWaveforms().size(); i++){
-		hc_vector[i]->Fill(event->getWaveforms()[i]->getcharge());
+			hc_vector[i]->Fill(event->getWaveforms()[i]->getcharge());
 			hc_vector_shifted[i]->Fill(event->getWaveforms()[i]->getcharge()-ped_mean[i]);
+			if(event->getWaveforms()[i]->getcharge()>ped_mean[i]+3*ped_sigma[i]){
+			hc_vector_shifted_cut[i]->Fill(event->getWaveforms()[i]->getcharge()-ped_mean[i]);
+		}
   }
-  gDirectory->cd("..");
   gDirectory->cd("Hist_Total_Charge");
   hctot->Fill(event->GetTot_charge());
   gDirectory->cd("..");
@@ -207,9 +223,11 @@ void AnaTools::TOF(){
 	double TOF_mean_cfm=(t_in_cfm[0]+t_in_cfm[1]+t_in_cfm[14]+t_in_cfm[15])*0.25*SAMPLINGPERIOD;
 	
 	for(int l=2;l<14;l++){
-		
 		t_in_cfm[l]=t_in_cfm[l]*SAMPLINGPERIOD-TOF_mean_cfm;
 		hTOF_cfm[l]->Fill(t_in_cfm[l]);
+		if(event->getWaveforms()[l]->getcharge()>ped_mean[l]+3*ped_sigma[l]){
+			hTOF_cfm_cut[l]->Fill(t_in_cfm[l]);
+		}
 	}
 	
 	
@@ -225,29 +243,42 @@ void AnaTools::f_TOF(){
 	for(int l=2;l<14;l++){
 	
 		
-		fit_TOF1[l-2] = new TF1("fit_TOF","gaus(0)+gaus(3)+[6]",-0.5,0.5);
-		fit_TOF1[l-2] ->SetParameter(0,hTOF_cfm[l]->GetBinContent(hTOF_cfm[l]->GetMaximumBin()));
-		fit_TOF1[l-2] ->SetParameter(1,hTOF_cfm[l]->GetBinCenter(hTOF_cfm[l]->GetMaximumBin()));
-		fit_TOF1[l-2] ->SetParameter(2,hTOF_cfm[l]->GetStdDev());
-		fit_TOF1[l-2] ->SetParLimits(2,0.5e-9,2.2e-9); 
-		fit_TOF1[l-2] ->SetParameter(3,hTOF_cfm[l]->GetBinContent(hTOF_cfm[l]->GetMaximumBin()));
-		fit_TOF1[l-2] ->SetParameter(4,hTOF_cfm[l]->GetBinCenter(hTOF_cfm[l]->GetMaximumBin()));
-		fit_TOF1[l-2] ->SetParameter(5,hTOF_cfm[l]->GetStdDev());
-		fit_TOF1[l-2] ->SetParLimits(5,2e-9,4e-9); 
-		fit_TOF1[l-2]	->SetNpx(10000);
+		fit_TOF_cfm[l-2] = new TF1("fit_TOF","gaus(0)+gaus(3)+[6]",-0.5,0.5);
+		fit_TOF_cfm[l-2] ->SetParameter(0,hTOF_cfm[l]->GetBinContent(hTOF_cfm[l]->GetMaximumBin()));
+		fit_TOF_cfm[l-2] ->SetParameter(1,hTOF_cfm[l]->GetBinCenter(hTOF_cfm[l]->GetMaximumBin()));
+		fit_TOF_cfm[l-2] ->SetParameter(2,hTOF_cfm[l]->GetStdDev());
+		fit_TOF_cfm[l-2] ->SetParLimits(2,0.5e-9,2.2e-9); 
+		fit_TOF_cfm[l-2] ->SetParameter(3,hTOF_cfm[l]->GetBinContent(hTOF_cfm[l]->GetMaximumBin()));
+		fit_TOF_cfm[l-2] ->SetParameter(4,hTOF_cfm[l]->GetBinCenter(hTOF_cfm[l]->GetMaximumBin()));
+		fit_TOF_cfm[l-2] ->SetParameter(5,hTOF_cfm[l]->GetStdDev());
+		fit_TOF_cfm[l-2] ->SetParLimits(5,2e-9,4e-9); 
+		fit_TOF_cfm[l-2]	->SetNpx(10000);
 		
-		hTOF_cfm[l]->Fit(fit_TOF1[l-2],"R");
+		hTOF_cfm[l]->Fit(fit_TOF_cfm[l-2],"R");
 		
 	 //Usare SetRangeUser per zoommare
  	
 		
 		hTOF_cfm[l]->SetAxisRange(-0.05e-6,0.05e-6);
-		//fit_TOF1[l-2]->SetRange(-30e-9,30e-9);
 		
-	 /*auto* legend = new TLegend(0.65,0.7,0.89,0.89);
-   legend->AddEntry(fit_TOF1[l-2],"Fit result", "L");
-   legend->Draw();*/
 		
+			fit_TOF_cfm_cut[l-2] = new TF1("fit_TOF","gaus(0)+gaus(3)+[6]",-0.5,0.5);
+		fit_TOF_cfm[l-2] ->SetParameter(0,hTOF_cfm_cut[l]->GetBinContent(hTOF_cfm_cut[l]->GetMaximumBin()));
+		fit_TOF_cfm_cut[l-2] ->SetParameter(1,hTOF_cfm_cut[l]->GetBinCenter(hTOF_cfm_cut[l]->GetMaximumBin()));
+		fit_TOF_cfm_cut[l-2] ->SetParameter(2,hTOF_cfm_cut[l]->GetStdDev());
+		fit_TOF_cfm_cut[l-2] ->SetParLimits(2,0.5e-9,2.2e-9); 
+		fit_TOF_cfm_cut[l-2] ->SetParameter(3,hTOF_cfm_cut[l]->GetBinContent(hTOF_cfm_cut[l]->GetMaximumBin()));
+		fit_TOF_cfm_cut[l-2] ->SetParameter(4,hTOF_cfm_cut[l]->GetBinCenter(hTOF_cfm_cut[l]->GetMaximumBin()));
+		fit_TOF_cfm_cut[l-2] ->SetParameter(5,hTOF_cfm_cut[l]->GetStdDev());
+		fit_TOF_cfm_cut[l-2] ->SetParLimits(5,2e-9,4e-9); 
+		fit_TOF_cfm_cut[l-2]	->SetNpx(10000);
+		
+		hTOF_cfm_cut[l]->Fit(fit_TOF_cfm_cut[l-2],"R");
+		
+	 //Usare SetRangeUser per zoommare
+ 	
+		
+		hTOF_cfm_cut[l]->SetAxisRange(-0.05e-6,0.05e-6);
 	}
 }
 
