@@ -17,7 +17,7 @@ class AnaTools{
  public:
   
   //Constructor and Destructor
-  AnaTools(TFile *f, Event *myEvent);
+  AnaTools(TFile *f, Event *myEvent, double cf_);
   virtual ~AnaTools();
 
   //Getters
@@ -36,7 +36,8 @@ class AnaTools{
 	void f_TOF();
 	void Pedestal(string inname);
  private:
-
+ 
+	double cf;
   TFile *outfile;
   Event *event;
   TH1D* hist_vector[3][NCHANNELS];

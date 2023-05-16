@@ -20,9 +20,10 @@
 using namespace std;
 
 //Constructor
-AnaTools::AnaTools(TFile *f, Event *myEvent){ 
+AnaTools::AnaTools(TFile *f, Event *myEvent, double cf_){ 
   outfile = f;
   event = myEvent;
+  cf=cf_;
 
   ifstream qeinfile; //File "QE.dat" stream
   string fileline; //A line of the File
@@ -110,11 +111,11 @@ void AnaTools::BookingHistograms(){
  		gDirectory->cd(&newHist[0]);
 
   	TString name = Form("Hist_TOF_cfm_ch%d",i);
-  	TString title = Form("Distribution of time of arrival of ch%d wrt mean time of arrival of ch 0,1,14,15 using Constant Fraction Method; Time of arrival[s]; Counts (#)",i);
+  	TString title = Form("Distribution of time of arrival of ch%d wrt mean time of arrival of ch 0,1,14,15 using Constant Fraction Method with constant %lf; Time of arrival[s]; Counts (#)",i,cf);
   	hTOF_cfm[i] = new TH1D(name, title, 500, -1.e-7, 1.e-7);
 
   	name = Form("Hist_TOF_cfm_ch%d_cut",i);
-  	title = Form("Distribution of time of arrival of ch%d wrt mean time of arrival of ch 0,1,14,15 using Constant Fraction Method (with no pedastal); Time of arrival[s]; Counts (#)",i);
+  	title = Form("Distribution of time of arrival of ch%d wrt mean time of arrival of ch 0,1,14,15 using Constant Fraction Method with constant %lf (without pedestal); Time of arrival[s]; Counts (#)",i,cf);
   	hTOF_cfm_cut[i] = new TH1D(name, title, 500, -1.e-7, 1.e-7);
   	gDirectory->cd("..");
   	
@@ -241,7 +242,7 @@ void AnaTools::TOF(){
 			}
 			
 			t_in_cfm[i]=tpeak[i];
-			while(event->getWaveforms()[i]->getv_amplitude()[int(t_in_cfm[i])]<V_peak[i]*0.2){
+			while(event->getWaveforms()[i]->getv_amplitude()[int(t_in_cfm[i])]<V_peak[i]*cf){
 			t_in_cfm[i]=t_in_cfm[i]-1;
 		 }
 		
@@ -264,7 +265,7 @@ void AnaTools::TOF(){
 
 
 
-void AnaTools::f_TOF(){
+void AnaTools::f_TOF(){   //f_TOF() is now built in macro ConstVarMacro.C
 
 	for(int l=2;l<14;l++){
 	

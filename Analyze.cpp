@@ -25,6 +25,7 @@ int main(int argc, char *argv[]){
   string outname("out.root");
 
   int nevent=1;
+  double cf;
   unsigned long int filepos=0;
   unsigned long int filelength;
 
@@ -39,11 +40,14 @@ int main(int argc, char *argv[]){
     if(strcmp("-nev",argv[i])==0){
       nevent = atoi(argv[++i]);
     }
+     if(strcmp("-frac",argv[i])==0){
+      cf = atof(argv[++i]);
+    }
   }
 
 
   //open output file
-  TFile *f = new TFile(outname.data(), "RECREATE");
+  TFile *f = new TFile(outname.data(), "RECREATE"); //DISCLAIMER: RECREATE WILL OVERWRITE THE CONTENT OF THE OUTPUT FILE. IT'S BETTER TO DISTINGUISH EACH OUTPUT FILE BY THE CONSTANT OF TOF_cfm
   f->cd();
 
 
@@ -52,7 +56,7 @@ int main(int argc, char *argv[]){
 
 
   //create an Analysys Tool object and create histograms
-  AnaTools *myAnaTools = new AnaTools(f,myEvent);
+  AnaTools *myAnaTools = new AnaTools(f,myEvent, cf);
   myAnaTools->BookingHistograms();
 
   //open input file
