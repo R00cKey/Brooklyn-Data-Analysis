@@ -140,8 +140,8 @@ void AnaTools::BookingHistograms(){
   gDirectory->mkdir("Hist_Channels_Light_Yield");
   gDirectory->cd("Hist_Channels_Light_Yield");
 	for(unsigned int k=1; k<=NCHANNELS;k++){
-  		TString name = Form("Hist_LY_Channel_%d",k);
-  		TString title = Form("Light Yield Distribution Channel %d; LY[# produced photons/Energy loss]; Counts(#)", k);
+  		TString name = Form("Hist_LY_Channel_%d",k-1);
+  		TString title = Form("Light Yield Distribution Channel %d; LY[# produced photons/Energy loss]; Counts(#)", k-1);
   		hly_vector[k-1] = new TH1D(name, title, 100, -1000., 1000.);
   	}
 	gDirectory->cd("..");
