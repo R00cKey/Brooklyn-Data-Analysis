@@ -80,7 +80,7 @@ int main(int argc, char *argv[]){
     nevent++;
     if(nevent%100==0){cout << "\r" <<"Processed " << 100*filepos/filelength << "%" << " of file" <<flush;}
   }
-  cout << "\r" <<"Processed 100" << "%" << "of file" <<flush;
+  cout << "\r" <<"Processed 100" << "%" << " of file" <<flush;
   cout << " " << endl;
   //myAnaTools->f_TOF();
 	

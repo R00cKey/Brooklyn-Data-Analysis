@@ -132,18 +132,18 @@ void AnaTools::BookingHistograms(){
   	}
    
   //LIGHT YIELD HISTOGRAMS
-  gDirectory->mkdir("Hist_Total_Light_Yield");
+  /*gDirectory->mkdir("Hist_Total_Light_Yield");
   gDirectory->cd("Hist_Total_Light_Yield");
   name = Form("Hist_Total_Light_Yield");
   title = Form("Hodoscope Light Yield Distribution; LY[# produced photons/Energy loss]; Counts(#)");
   hlytot = new TH1D(name, title, 100, -1.e5, 1.e5);
-  gDirectory->cd("..");
+  gDirectory->cd("..");*/
   gDirectory->mkdir("Hist_Channels_Light_Yield");
   gDirectory->cd("Hist_Channels_Light_Yield");
 	for(unsigned int k=1; k<=NCHANNELS;k++){
   		TString name = Form("Hist_LY_Channel_%d",k-1);
   		TString title = Form("Light Yield Distribution Channel %d; LY[# produced photons/Energy loss]; Counts(#)", k-1);
-  		hly_vector[k-1] = new TH1D(name, title, 100, -1000., 1000.);
+  		hly_vector[k-1] = new TH1D(name, title, 100, -100., 2000.);
   	}
 	gDirectory->cd("..");
 	
