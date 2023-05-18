@@ -82,7 +82,7 @@ int main(int argc, char *argv[]){
   }
   cout << "\r" <<"Processed 100" << "%" << "of file" <<flush;
   cout << " " << endl;
-  myAnaTools->f_TOF();
+  //myAnaTools->f_TOF();
 	
   cout<< "Total No. Events read:" << nevent-1 << endl; 
  
