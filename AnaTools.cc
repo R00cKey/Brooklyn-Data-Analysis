@@ -264,7 +264,7 @@ void AnaTools::TOF(){
 
 
 
-
+/*
 void AnaTools::f_TOF(){   //f_TOF() is now built in macro ConstVarMacro.C
 
 	for(int l=2;l<14;l++){
@@ -308,6 +308,7 @@ void AnaTools::f_TOF(){   //f_TOF() is now built in macro ConstVarMacro.C
 		hTOF_cfm_cut[l]->SetAxisRange(-0.05e-6,0.05e-6);
 	}
 }
+*/
 
 void AnaTools::Pedestal(string inname){
 	ifstream infile; //File "inname.dat" stream
