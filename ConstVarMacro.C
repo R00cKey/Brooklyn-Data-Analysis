@@ -6,20 +6,18 @@ void ConstVarMacro(string file_in, string file_out, double run, double cf){
 	ofstream infofile;
 	infofile.open(file_out);
 	
-	
-	TFile *file_print=newTFile(Form("FitParRun%dConst%lf", cf);
+
 	ofstream infofile_fit;
-	infofile_fit.open(file_print);
+	infofile_fit.open(Form("FitParRun%gConst%g.dat", run, cf));
 	
-	TFile *file_print_cut=newTFile(Form("FitParRun%dConst%lfCut", cf);
 	ofstream infofile_fit_cut;
-	infofile_fit_cut.open(file_print_cut);
+	infofile_fit_cut.open(Form("FitParRun%gConst%gCut.dat", run, cf));
 	
 	infofile_fit<< "CONST\t"<<cf<<endl;
 	infofile_fit_cut<< "CONST\t"<<cf<<endl;
 
-	infofile_fit<<CHANNEL\tENTRIES\tMEAN[Gaus1]\tSTDDEV[Gaus1]\tMEAN[Gaus2]\tSTDDEV[Gaus2]\t VerticalShift\n";
-	infofile_fit_cut<<CHANNEL\tENTRIES\tMEAN[Gaus1]\tSTDDEV[Gaus1]\tMEAN[Gaus2]\tSTDDEV[Gaus2]\t VerticalShift\n";
+	infofile_fit<<"CHANNEL\tENTRIES\tMEAN[Gaus1]\tSTDDEV[Gaus1]\tMEAN[Gaus2]\tSTDDEV[Gaus2]\t VerticalShift\n";
+	infofile_fit_cut<<"CHANNEL\tENTRIES\tMEAN[Gaus1]\tSTDDEV[Gaus1]\tMEAN[Gaus2]\tSTDDEV[Gaus2]\t VerticalShift\n";
 	
 	
 	TH1D *hTOF_cfm[12];
@@ -97,10 +95,10 @@ void ConstVarMacro(string file_in, string file_out, double run, double cf){
 		hTOF_cfm_cut[l-2]->Write();
 
 		
-		infofile_fit << l << "\t" << fit_TOF_cfm[l-2]->GetEntries()<<"\t"<<fit_TOF_cfm[l-2]->GetParameter(1) << "\t" << fit_TOF_cfm[l-2]->GetParameter(2) << "\t" << fit_TOF_cfm[l-2]->GetParameter(4)<< "\t" << 		fit_TOF_cfm[l-2]->GetParameter(5) <<"t"<< fit_TOF_cfm[l-2]->GetParameter(6)<<endl;
+		infofile_fit << l << "\t" << hTOF_cfm[l-2]->GetEntries()<<"\t"<<fit_TOF_cfm[l-2]->GetParameter(1) << "\t" << fit_TOF_cfm[l-2]->GetParameter(2) << "\t" << fit_TOF_cfm[l-2]->GetParameter(4)<< "\t" << 		fit_TOF_cfm[l-2]->GetParameter(5) <<"\t"<< fit_TOF_cfm[l-2]->GetParameter(6)<<endl;
 		
 		
-		infofile_fit_cut << l << "\t" << fit_TOF_cfm_cut[l-2]->GetEntries()<<"\t"<<fit_TOF_cfm_cut[l-2]->GetParameter(1) << "\t" << fit_TOF_cfm_cut[l-2]->GetParameter(2) << "\t" << fit_TOF_cfm_cut[l-2]->GetParameter(4)<< "\t" << 		fit_TOF_cfm_cut[l-2]->GetParameter(5) <<"t"<< fit_TOF_cfm_cut[l-2]->GetParameter(6)<<endl;
+		infofile_fit_cut << l << "\t" << hTOF_cfm_cut[l-2]->GetEntries()<<"\t"<<fit_TOF_cfm_cut[l-2]->GetParameter(1) << "\t" << fit_TOF_cfm_cut[l-2]->GetParameter(2) << "\t" << fit_TOF_cfm_cut[l-2]->GetParameter(4)<< "\t" << 		fit_TOF_cfm_cut[l-2]->GetParameter(5) <<"\t"<< fit_TOF_cfm_cut[l-2]->GetParameter(6)<<endl;
 
 
 
