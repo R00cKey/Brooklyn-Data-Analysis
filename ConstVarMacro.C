@@ -16,8 +16,8 @@ void ConstVarMacro(string file_in, string file_out, double run, double cf){
 	infofile_fit<< "CONST\t"<<cf<<endl;
 	infofile_fit_cut<< "CONST\t"<<cf<<endl;
 
-	infofile_fit<<"CHANNEL\tENTRIES\tMEAN[Gaus1]\tSTDDEV[Gaus1]\tMEAN[Gaus2]\tSTDDEV[Gaus2]\t VerticalShift\n";
-	infofile_fit_cut<<"CHANNEL\tENTRIES\tMEAN[Gaus1]\tSTDDEV[Gaus1]\tMEAN[Gaus2]\tSTDDEV[Gaus2]\t VerticalShift\n";
+	infofile_fit<<"CHANNEL\tENTRIES\tMEAN[Gaus1]\tSTDDEV[Gaus1]\tSTDDEV_ERR[Gaus1]\tMEAN[Gaus2]\tSTDDEV[Gaus2]\t VerticalShift\n";
+	infofile_fit_cut<<"CHANNEL\tENTRIES\tMEAN[Gaus1]\tSTDDEV[Gaus1]\tSTDDEV_ERR[Gaus1]\tMEAN[Gaus2]\tSTDDEV[Gaus2]\t VerticalShift\n";
 	
 	
 	TH1D *hTOF_cfm[12];
@@ -95,10 +95,10 @@ void ConstVarMacro(string file_in, string file_out, double run, double cf){
 		hTOF_cfm_cut[l-2]->Write();
 
 		
-		infofile_fit << l << "\t" << hTOF_cfm[l-2]->GetEntries()<<"\t"<<fit_TOF_cfm[l-2]->GetParameter(1) << "\t" << fit_TOF_cfm[l-2]->GetParameter(2) << "\t" << fit_TOF_cfm[l-2]->GetParameter(4)<< "\t" << 		fit_TOF_cfm[l-2]->GetParameter(5) <<"\t"<< fit_TOF_cfm[l-2]->GetParameter(6)<<endl;
+		infofile_fit << l << "\t" << hTOF_cfm[l-2]->GetEntries()<<"\t"<<fit_TOF_cfm[l-2]->GetParameter(1) << "\t" << fit_TOF_cfm[l-2]->GetParameter(2) << "\t" << fit_TOF_cfm[l-2]->GetParError(2) << "\t" << fit_TOF_cfm[l-2]->GetParameter(4)<< "\t" << 		fit_TOF_cfm[l-2]->GetParameter(5) <<"\t"<< fit_TOF_cfm[l-2]->GetParameter(6)<<endl;
 		
 		
-		infofile_fit_cut << l << "\t" << hTOF_cfm_cut[l-2]->GetEntries()<<"\t"<<fit_TOF_cfm_cut[l-2]->GetParameter(1) << "\t" << fit_TOF_cfm_cut[l-2]->GetParameter(2) << "\t" << fit_TOF_cfm_cut[l-2]->GetParameter(4)<< "\t" << 		fit_TOF_cfm_cut[l-2]->GetParameter(5) <<"\t"<< fit_TOF_cfm_cut[l-2]->GetParameter(6)<<endl;
+		infofile_fit_cut << l << "\t" << hTOF_cfm_cut[l-2]->GetEntries()<<"\t"<<fit_TOF_cfm_cut[l-2]->GetParameter(1) << "\t" << fit_TOF_cfm_cut[l-2]->GetParameter(2) << "\t" << fit_TOF_cfm_cut[l-2]->GetParError(2)  << "\t" << fit_TOF_cfm_cut[l-2]->GetParameter(4)<< "\t" << fit_TOF_cfm_cut[l-2]->GetParameter(5) <<"\t"<< fit_TOF_cfm_cut[l-2]->GetParameter(6)<<endl;
 
 
 
