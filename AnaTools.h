@@ -17,7 +17,7 @@ class AnaTools{
  public:
   
   //Constructor and Destructor
-  AnaTools(TFile *f, Event *myEvent, double cf_);
+  AnaTools(TFile *f, Event *myEvent, double cf_, double th_);
   virtual ~AnaTools();
 
   //Getters
@@ -38,6 +38,7 @@ class AnaTools{
  private:
  
 	double cf;
+	double th;
   TFile *outfile;
   Event *event;
   TH1D* hist_vector[3][NCHANNELS];
@@ -49,7 +50,8 @@ class AnaTools{
   TH1D *hlytot;
   TH1D *hTOF_cfm[NCHANNELS];
   TH1D *hTOF_cfm_cut[NCHANNELS];
-  TH1D *hTOF_ft;
+  TH1D *hTOF_ft[NCHANNELS];
+  TH1D *hTOF_ft_cut[NCHANNELS];
   TF1 *fit_TOF_cfm[12];
   TF1 *fit_TOF_cfm_cut[12];
   double gain_[16];

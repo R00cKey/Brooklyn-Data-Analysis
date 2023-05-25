@@ -25,7 +25,8 @@ int main(int argc, char *argv[]){
   string outname("out.root");
 
   int nevent=1;
-  double cf;
+  double cf=0;
+  double th=0;
   unsigned long int filepos=0;
   unsigned long int filelength;
 
@@ -43,6 +44,9 @@ int main(int argc, char *argv[]){
      if(strcmp("-frac",argv[i])==0){
       cf = atof(argv[++i]);
     }
+     if(strcmp("-th",argv[i])==0){
+      th = atof(argv[++i]);
+    }
   }
 
 
@@ -56,7 +60,7 @@ int main(int argc, char *argv[]){
 
 
   //create an Analysys Tool object and create histograms
-  AnaTools *myAnaTools = new AnaTools(f,myEvent, cf);
+  AnaTools *myAnaTools = new AnaTools(f,myEvent, cf, th);
   myAnaTools->BookingHistograms();
 
   //open input file

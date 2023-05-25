@@ -20,10 +20,11 @@
 using namespace std;
 
 //Constructor
-AnaTools::AnaTools(TFile *f, Event *myEvent, double cf_){ 
+AnaTools::AnaTools(TFile *f, Event *myEvent, double cf_, double th_){ 
   outfile = f;
   event = myEvent;
   cf=cf_;
+  th=th_;
 
   ifstream qeinfile; //File "QE.dat" stream
   string fileline; //A line of the File
@@ -105,29 +106,41 @@ void AnaTools::BookingHistograms(){
    
   //TOF HISTOGRAMS
   for(int i=2;i<14;i++){
-  	char dir[17]="Hist_TOF_cfm_ch";
-	  char *newHist=strcat(dir, to_string(i).c_str());        
- 		gDirectory->mkdir(&newHist[0]);
- 		gDirectory->cd(&newHist[0]);
+ 		//CONSTANT FRACTION HISTOGRAMS
+ 		if(cf!=0){
+  		char dir[17]="Hist_TOF_cfm_ch";
+	  	char *newHist=strcat(dir, to_string(i).c_str());        
+ 			gDirectory->mkdir(&newHist[0]);
+ 			gDirectory->cd(&newHist[0]);
 
-  	TString name = Form("Hist_TOF_cfm_ch%d",i);
-  	TString title = Form("Distribution of time of arrival of ch%d wrt mean time of arrival of ch 0,1,14,15 using Constant Fraction Method with constant %lf; Time of arrival[s]; Counts (#)",i,cf);
-  	hTOF_cfm[i] = new TH1D(name, title, 500, -1.e-7, 1.e-7);
+			TString name = Form("Hist_TOF_cfm_ch%d",i);
+			TString title = Form("Distribution of time of arrival of ch%d wrt mean time of arrival of ch 0,1,14,15 using Constant Fraction Method with constant %lf; Time of arrival[s]; Counts (#)",i,cf);
+  		hTOF_cfm[i] = new TH1D(name, title, 500, -1.e-7, 1.e-7);
 
-  	name = Form("Hist_TOF_cfm_ch%d_cut",i);
-  	title = Form("Distribution of time of arrival of ch%d wrt mean time of arrival of ch 0,1,14,15 using Constant Fraction Method with constant %lf (without pedestal); Time of arrival[s]; Counts (#)",i,cf);
-  	hTOF_cfm_cut[i] = new TH1D(name, title, 500, -1.e-7, 1.e-7);
-  	gDirectory->cd("..");
+  		name = Form("Hist_TOF_cfm_ch%d_cut",i);
+  		title = Form("Distribution of time of arrival of ch%d wrt mean time of arrival of ch 0,1,14,15 using Constant Fraction Method with constant %lf (without pedestal); Time of arrival[s]; Counts (#)",i,cf);
+  		hTOF_cfm_cut[i] = new TH1D(name, title, 500, -1.e-7, 1.e-7);
+  		gDirectory->cd("..");
+  		}
   	
+  	//FIXED THRESHOLD HISTOGRAMS
+  	if(th!=0){
+  		char dir2[17]="Hist_TOF_ft_ch";
+	  	char *newHist2=strcat(dir2, to_string(i).c_str());        
+ 			gDirectory->mkdir(&newHist2[0]);
+ 			gDirectory->cd(&newHist2[0]);
+	
+  		name = Form("Hist_TOF_ft_ch%d",i);
+  		title = Form("Distribution of time of arrival of ch%d wrt mean time of arrival of ch 0,1,14,15 using Fixed Threshold Method with constant %lf; Time of arrival[s]; Counts (#)",i,th);
+  		hTOF_ft[i] = new TH1D(name, title, 500, -1.e-7, 1.e-7);
+
+  		name = Form("Hist_TOF_ft_ch%d_cut",i);
+  		title = Form("Distribution of time of arrival of ch%d wrt mean time of arrival of ch 0,1,14,15 using Fixed Threshold Method with constant %lf (without pedestal); Time of arrival[s]; Counts (#)",i,th);
+  		hTOF_ft_cut[i] = new TH1D(name, title, 500, -1.e-7, 1.e-7);
+ 			gDirectory->cd("..");
+  	}
   	
-  	
-  	
-  	/*gDirectory->mkdir("Hist_TOF_ft");
-  	gDirectory->cd("Hist_TOF_ft");
-  	name = "Hist_TOF_ft";
-  	title = ("Distribution of TOF wrt mean TOF of ch 0,1,14,15 using a fixed threshold; Time of flight[s]; Counts (#)");
-  	hTOF_ft = new TH1D(name, title, 500, -1.e-7, 1.e-7);
-  	gDirectory->cd("..");*/
+ 
   	
   	}
    
@@ -230,6 +243,7 @@ double AnaTools::getLightYield(double Q, double gain, double qe, double etr){
 void AnaTools::TOF(){
 	double V_peak[16];
 	double t_in_cfm[16];
+	double t_in_ft[16];
 	double tpeak[16];
 		for(unsigned int i =0; i < event->getWaveforms().size(); i++){
 			V_peak[i]=0;
@@ -240,27 +254,41 @@ void AnaTools::TOF(){
 				}
 			//	cout << "tpeak " << tpeak[i] << endl;
 			}
-			
-			t_in_cfm[i]=tpeak[i];
-			while(event->getWaveforms()[i]->getv_amplitude()[int(t_in_cfm[i])]<V_peak[i]*cf){
-			t_in_cfm[i]=t_in_cfm[i]-1;
+			if(cf!=0){
+				t_in_cfm[i]=tpeak[i];
+				while(event->getWaveforms()[i]->getv_amplitude()[int(t_in_cfm[i])]<V_peak[i]*cf){
+				t_in_cfm[i]=t_in_cfm[i]-1;
+			 }
+			}
+			if(th!=0){
+		 		t_in_ft[i]=tpeak[i];
+				while(event->getWaveforms()[i]->getv_amplitude()[int(t_in_ft[i])]<-th){
+				t_in_ft[i]=t_in_ft[i]-1;
+		 	}
 		 }
-		
 		}
 	double TOF_mean_cfm=(t_in_cfm[0]+t_in_cfm[1]+t_in_cfm[14]+t_in_cfm[15])*0.25*SAMPLINGPERIOD;
-	
+	double TOF_mean_ft=(t_in_ft[0]+t_in_ft[1]+t_in_ft[14]+t_in_ft[15])*0.25*SAMPLINGPERIOD;
 	for(int l=2;l<14;l++){
-		t_in_cfm[l]=t_in_cfm[l]*SAMPLINGPERIOD-TOF_mean_cfm;
-		hTOF_cfm[l]->Fill(t_in_cfm[l]);
-		if(event->getWaveforms()[l]->getcharge()>ped_mean[l]+3*ped_sigma[l]){
-			hTOF_cfm_cut[l]->Fill(t_in_cfm[l]);
+		if(cf!=0){
+			t_in_cfm[l]=t_in_cfm[l]*SAMPLINGPERIOD-TOF_mean_cfm;
+			hTOF_cfm[l]->Fill(t_in_cfm[l]);
+			if(event->getWaveforms()[l]->getcharge()>ped_mean[l]+3*ped_sigma[l]){
+					hTOF_cfm_cut[l]->Fill(t_in_cfm[l]);
+				}
+			}
+		if(th!=0){
+				t_in_ft[l]=t_in_ft[l]*SAMPLINGPERIOD-TOF_mean_ft;
+				hTOF_ft[l]->Fill(t_in_ft[l]);
+				if(event->getWaveforms()[l]->getcharge()>ped_mean[l]+3*ped_sigma[l]){
+					hTOF_ft_cut[l]->Fill(t_in_ft[l]);
+				}
 		}
 	}
 	
 	
 	
 }
-
 
 
 
