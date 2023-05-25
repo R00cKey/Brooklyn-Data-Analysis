@@ -8,10 +8,10 @@ void ConstVarMacro(string file_in, string file_out, double run, double cf){
 	
 
 	ofstream infofile_fit;
-	infofile_fit.open(Form("FitParRun%gConst%g.dat", run, cf));
+	infofile_fit.open(Form("FitParRun%gCfm%g.dat", run, cf));
 	
 	ofstream infofile_fit_cut;
-	infofile_fit_cut.open(Form("FitParRun%gConst%gCut.dat", run, cf));
+	infofile_fit_cut.open(Form("FitParRun%gCfm%gCut.dat", run, cf));
 	
 	infofile_fit<< "CONST\t"<<cf<<endl;
 	infofile_fit_cut<< "CONST\t"<<cf<<endl;
@@ -35,7 +35,7 @@ void ConstVarMacro(string file_in, string file_out, double run, double cf){
 		hTOF_cfm[l-2]->Rebin(2);
 		hTOF_cfm_cut[l-2]->Rebin(2);
 	
-		fit_TOF_cfm[l-2] = new TF1(Form("fit_TOF_ch%d",l),"gaus(0)+gaus(3)+[6]",-0.5,0.5);
+		fit_TOF_cfm[l-2] = new TF1(Form("fit_TOF_cfm_ch%d",l),"gaus(0)+gaus(3)+[6]",-0.5,0.5);
 		cout <<l<<endl;
 		fit_TOF_cfm[l-2] ->SetParameter(0,hTOF_cfm[l-2]->GetBinContent(hTOF_cfm[l-2]->GetMaximumBin()));
 		fit_TOF_cfm[l-2] ->SetParLimits(0,0,hTOF_cfm[l-2]->GetBinContent(hTOF_cfm[l-2]->GetMaximumBin())*1.5); 
@@ -61,7 +61,7 @@ void ConstVarMacro(string file_in, string file_out, double run, double cf){
 		hTOF_cfm[l-2]->SetAxisRange(-0.05e-6,0.05e-6);
 		
 		
-		fit_TOF_cfm_cut[l-2] = new TF1(Form("fit_TOF_cut_ch%d",l),"gaus(0)+gaus(3)+[6]",-0.5,0.5);
+		fit_TOF_cfm_cut[l-2] = new TF1(Form("fit_TOF_cfm_cut_ch%d",l),"gaus(0)+gaus(3)+[6]",-0.5,0.5);
 		fit_TOF_cfm_cut[l-2] ->SetParameter(0,hTOF_cfm_cut[l-2]->GetBinContent(hTOF_cfm_cut[l-2]->GetMaximumBin()));
 		fit_TOF_cfm_cut[l-2] ->SetParLimits(0,0,hTOF_cfm_cut[l-2]->GetBinContent(hTOF_cfm_cut[l-2]->GetMaximumBin())*1.5); 
 		fit_TOF_cfm_cut[l-2] ->SetParameter(1,hTOF_cfm_cut[l-2]->GetBinCenter(hTOF_cfm_cut[l-2]->GetMaximumBin()));

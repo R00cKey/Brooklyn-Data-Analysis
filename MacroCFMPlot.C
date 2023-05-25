@@ -18,8 +18,8 @@ void MacroCFMPlot(double run, double cf1, double cf2, double cf3, double cf4, do
   
   for(int i=0; i <=8; i++){
   
-		infile[i].open(Form("FitParRun%gConst%g.dat", run, cfs[i]));
-		infile_cut[i].open(Form("FitParRun%gConst%gCut.dat", run, cfs[i]));
+		infile[i].open(Form("FitParRun%gCfm%g.dat", run, cfs[i]));
+		infile_cut[i].open(Form("FitParRun%gCfm%gCut.dat", run, cfs[i]));
     if(infile[i].fail()){ // checks if file opended 
    		cout << "error=file of fit parameters not found" << endl; 
    	 } 
