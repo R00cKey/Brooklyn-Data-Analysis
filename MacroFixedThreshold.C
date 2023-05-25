@@ -13,8 +13,8 @@ void MacroFixedThreshold(string file_in, string file_out, double run, double ft)
 	ofstream infofile_fit_cut;
 	infofile_fit_cut.open(Form("FitParRun%gFt%gCut.dat", run, ft));
 	
-	infofile_fit<< "THRESHOLD\t"<<cf<<endl;
-	infofile_fit_cut<< "THRESHOLD\t"<<cf<<endl;
+	infofile_fit<< "THRESHOLD\t"<<ft<<endl;
+	infofile_fit_cut<< "THRESHOLD\t"<<ft<<endl;
 
 	infofile_fit<<"CHANNEL\tENTRIES\tMEAN[Gaus1]\tSTDDEV[Gaus1]\tSTDDEV_ERR[Gaus1]\tMEAN[Gaus2]\tSTDDEV[Gaus2]\t VerticalShift\n";
 	infofile_fit_cut<<"CHANNEL\tENTRIES\tMEAN[Gaus1]\tSTDDEV[Gaus1]\tSTDDEV_ERR[Gaus1]\tMEAN[Gaus2]\tSTDDEV[Gaus2]\t VerticalShift\n";
@@ -95,5 +95,7 @@ void MacroFixedThreshold(string file_in, string file_out, double run, double ft)
 		hTOF_ft_cut[l-2]->Write();
 
 		
-		infofile_fit << l << "\t" << hTOF_ft[l-2]->GetEntries()<<"\t"<<fit_TOF_ft[l-2]->GetParameter(1) << "\t" << fit_TOF_ft[l-2]->GetParameter(2) << "\t" << fit_TOF_ft[l-2]->GetParError(2) << "\t" << fit_TOF_[l-2]->GetParameter(4)<< "\t" << 		fit_TOF_ft[l-2]->GetParameter(5) <<"\t"<< fit_TOF_ft[l-2]->GetParameter(6)<<endl;
-		
+		infofile_fit << l << "\t" << hTOF_ft[l-2]->GetEntries()<<"\t"<<fit_TOF_ft[l-2]->GetParameter(1) << "\t" << fit_TOF_ft[l-2]->GetParameter(2) << "\t" << fit_TOF_ft[l-2]->GetParError(2) << "\t" << fit_TOF_ft[l-2]->GetParameter(4)<< "\t" << 		fit_TOF_ft[l-2]->GetParameter(5) <<"\t"<< fit_TOF_ft[l-2]->GetParameter(6)<<endl;
+}		
+
+}

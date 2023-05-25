@@ -88,6 +88,6 @@ void MacroFTPlot(double run, double ft1, double ft2, double ft3, double ft4, dou
 	outfile->Close();
 	outfile_cut->Close();	
 		
-		
+}		
 		
 		
