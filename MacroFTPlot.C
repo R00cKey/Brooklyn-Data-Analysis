@@ -40,9 +40,12 @@ void MacroFTPlot(double run, double ft1, double ft2, double ft3, double ft4, dou
 		  ss >> stdDev[ch-2][i];	
 		  ss >> stdDev[ch-2][i];
      	ss >> stdDev_err[ch-2][i];
-     	
+     }
+     
+     
+     while(!infile_cut[i].eof()){
      	getline(infile_cut[i],fileline_cut);
-		  istringstream zz(fileline);
+		  istringstream zz(fileline_cut);
 		  zz >> ch_cut;
 		  zz >> stdDev_cut[ch_cut-2][i];
 		  zz >> stdDev_cut[ch_cut-2][i];	

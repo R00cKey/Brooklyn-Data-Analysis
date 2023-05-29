@@ -40,9 +40,12 @@ void MacroCFMPlot(double run, double cf1, double cf2, double cf3, double cf4, do
 		  ss >> stdDev[ch-2][i];	
 		  ss >> stdDev[ch-2][i];
      	ss >> stdDev_err[ch-2][i];
-     	
+     }
+     
+     
+     while(!infile_cut[i].eof()){
      	getline(infile_cut[i],fileline_cut);
-		  istringstream zz(fileline);
+		  istringstream zz(fileline_cut);
 		  zz >> ch_cut;
 		  zz >> stdDev_cut[ch_cut-2][i];
 		  zz >> stdDev_cut[ch_cut-2][i];	

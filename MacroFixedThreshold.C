@@ -42,7 +42,7 @@ void MacroFixedThreshold(string file_in, string file_out, double run, double ft)
 		fit_TOF_ft[l-2] ->SetParameter(1,hTOF_ft[l-2]->GetBinCenter(hTOF_ft[l-2]->GetMaximumBin()));
 		fit_TOF_ft[l-2] ->SetParLimits(1,-20e-9,20e-9); 
 		fit_TOF_ft[l-2] ->SetParameter(2,1e-9);
-		fit_TOF_ft[l-2] ->SetParLimits(2,0.5e-9,2.2e-9); 
+		fit_TOF_ft[l-2] ->SetParLimits(2,0.5e-9,2.8e-9); 
 		fit_TOF_ft[l-2] ->SetParameter(3,hTOF_ft[l-2]->GetBinContent(hTOF_ft[l-2]->GetMaximumBin())*0.1);
 		fit_TOF_ft[l-2] ->SetParLimits(3,0,hTOF_ft[l-2]->GetBinContent(hTOF_ft[l-2]->GetMaximumBin())*0.5); 
 		fit_TOF_ft[l-2] ->SetParameter(4,hTOF_ft[l-2]->GetBinCenter(hTOF_ft[l-2]->GetMaximumBin()));
@@ -67,7 +67,7 @@ void MacroFixedThreshold(string file_in, string file_out, double run, double ft)
 		fit_TOF_ft_cut[l-2] ->SetParameter(1,hTOF_ft_cut[l-2]->GetBinCenter(hTOF_ft_cut[l-2]->GetMaximumBin()));
 		fit_TOF_ft_cut[l-2] ->SetParLimits(1,-20e-9,20e-9); 
 		fit_TOF_ft_cut[l-2] ->SetParameter(2,1e-9);
-		fit_TOF_ft_cut[l-2] ->SetParLimits(2,0.5e-9,2.2e-9); 
+		fit_TOF_ft_cut[l-2] ->SetParLimits(2,0.5e-9,2.8e-9); 
 		fit_TOF_ft_cut[l-2] ->SetParameter(3,hTOF_ft_cut[l-2]->GetBinContent(hTOF_ft_cut[l-2]->GetMaximumBin())*0.1);
 		fit_TOF_ft_cut[l-2] ->SetParLimits(3,0,hTOF_ft_cut[l-2]->GetBinContent(hTOF_ft_cut[l-2]->GetMaximumBin())*0.5);
 		fit_TOF_ft_cut[l-2] ->SetParameter(4,hTOF_ft_cut[l-2]->GetBinCenter(hTOF_ft_cut[l-2]->GetMaximumBin()));
@@ -96,6 +96,9 @@ void MacroFixedThreshold(string file_in, string file_out, double run, double ft)
 
 		
 		infofile_fit << l << "\t" << hTOF_ft[l-2]->GetEntries()<<"\t"<<fit_TOF_ft[l-2]->GetParameter(1) << "\t" << fit_TOF_ft[l-2]->GetParameter(2) << "\t" << fit_TOF_ft[l-2]->GetParError(2) << "\t" << fit_TOF_ft[l-2]->GetParameter(4)<< "\t" << 		fit_TOF_ft[l-2]->GetParameter(5) <<"\t"<< fit_TOF_ft[l-2]->GetParameter(6)<<endl;
+		
+		
+		infofile_fit_cut << l << "\t" << hTOF_ft_cut[l-2]->GetEntries()<<"\t"<<fit_TOF_ft_cut[l-2]->GetParameter(1) << "\t" << fit_TOF_ft_cut[l-2]->GetParameter(2) << "\t" << fit_TOF_ft_cut[l-2]->GetParError(2) << "\t" << fit_TOF_ft_cut[l-2]->GetParameter(4)<< "\t" << 		fit_TOF_ft_cut[l-2]->GetParameter(5) <<"\t"<< fit_TOF_ft_cut[l-2]->GetParameter(6)<<endl;
 }		
 
 }

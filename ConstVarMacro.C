@@ -42,7 +42,7 @@ void ConstVarMacro(string file_in, string file_out, double run, double cf){
 		fit_TOF_cfm[l-2] ->SetParameter(1,hTOF_cfm[l-2]->GetBinCenter(hTOF_cfm[l-2]->GetMaximumBin()));
 		fit_TOF_cfm[l-2] ->SetParLimits(1,-20e-9,20e-9); 
 		fit_TOF_cfm[l-2] ->SetParameter(2,1e-9);
-		fit_TOF_cfm[l-2] ->SetParLimits(2,0.5e-9,2.2e-9); 
+		fit_TOF_cfm[l-2] ->SetParLimits(2,0.5e-9,2.4e-9); 
 		fit_TOF_cfm[l-2] ->SetParameter(3,hTOF_cfm[l-2]->GetBinContent(hTOF_cfm[l-2]->GetMaximumBin())*0.1);
 		fit_TOF_cfm[l-2] ->SetParLimits(3,0,hTOF_cfm[l-2]->GetBinContent(hTOF_cfm[l-2]->GetMaximumBin())*0.5); 
 		fit_TOF_cfm[l-2] ->SetParameter(4,hTOF_cfm[l-2]->GetBinCenter(hTOF_cfm[l-2]->GetMaximumBin()));
@@ -67,7 +67,7 @@ void ConstVarMacro(string file_in, string file_out, double run, double cf){
 		fit_TOF_cfm_cut[l-2] ->SetParameter(1,hTOF_cfm_cut[l-2]->GetBinCenter(hTOF_cfm_cut[l-2]->GetMaximumBin()));
 		fit_TOF_cfm_cut[l-2] ->SetParLimits(1,-20e-9,20e-9); 
 		fit_TOF_cfm_cut[l-2] ->SetParameter(2,1e-9);
-		fit_TOF_cfm_cut[l-2] ->SetParLimits(2,0.5e-9,2.2e-9); 
+		fit_TOF_cfm_cut[l-2] ->SetParLimits(2,0.5e-9,2.4e-9); 
 		fit_TOF_cfm_cut[l-2] ->SetParameter(3,hTOF_cfm_cut[l-2]->GetBinContent(hTOF_cfm_cut[l-2]->GetMaximumBin())*0.1);
 		fit_TOF_cfm_cut[l-2] ->SetParLimits(3,0,hTOF_cfm_cut[l-2]->GetBinContent(hTOF_cfm_cut[l-2]->GetMaximumBin())*0.5);
 		fit_TOF_cfm_cut[l-2] ->SetParameter(4,hTOF_cfm_cut[l-2]->GetBinCenter(hTOF_cfm_cut[l-2]->GetMaximumBin()));
