@@ -145,12 +145,6 @@ void AnaTools::BookingHistograms(){
   	}
    
   //LIGHT YIELD HISTOGRAMS
-  /*gDirectory->mkdir("Hist_Total_Light_Yield");
-  gDirectory->cd("Hist_Total_Light_Yield");
-  name = Form("Hist_Total_Light_Yield");
-  title = Form("Hodoscope Light Yield Distribution; LY[# produced photons/Energy loss]; Counts(#)");
-  hlytot = new TH1D(name, title, 100, -1.e5, 1.e5);
-  gDirectory->cd("..");*/
   gDirectory->mkdir("Hist_Channels_Light_Yield");
   gDirectory->cd("Hist_Channels_Light_Yield");
 	for(unsigned int k=1; k<=NCHANNELS;k++){
@@ -208,10 +202,6 @@ void AnaTools::Process(){
 	for(unsigned int i =0; i < event->getWaveforms().size(); i++){
 		hly_vector[i]->Fill(getLightYield(event->getWaveforms()[i]->getcharge()-ped_mean[i], getGain(i), getQE(i), getEtr(i)));
   }
-  /*gDirectory->cd("..");
-  gDirectory->cd("Hist_Total_Light_Yield");
-  hlytot->Fill(getLightYield(event->GetTot_charge(), getGain(), getQE(), getEtr()));
-  gDirectory->cd("..");*/
 
 
   return;
@@ -233,7 +223,7 @@ void AnaTools::FillHistogram(int directory){
 
 double AnaTools::getLightYield(double Q, double gain, double qe, double etr){
 	//NOTA TEMPORANEA: DOPO DOVREMO IMPLEMENTARE L'ENERGIA RILASCIATA DAL MUONE. PER ORA ly=ly*E
-	return Q/(gain*qe*etr*ECHARGE);
+	return 2*Q/(gain*qe*etr*ECHARGE);
 }
 
 
