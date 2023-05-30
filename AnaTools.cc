@@ -108,7 +108,7 @@ void AnaTools::BookingHistograms(){
 	for(unsigned int k=1; k<=NCHANNELS;k++){
   		TString name = Form("Hist_Channel_%d_around_peak",k-1);
   		TString title = Form("Charge distribution channel %d around the peak; charge[C]; Counts(#)", k-1);
-  		hc_vector_ap[k-1] = new TH1D(name, title, 50, -2.e-12, 2.e-12);
+  		hc_vector_ap[k-1] = new TH1D(name, title, 400, -10.e-11, 60.e-11);
   	}
   gDirectory->cd("..");
   
@@ -183,15 +183,31 @@ void AnaTools::BookingHistograms(){
 void AnaTools::Process(){
 	double tot_charge=0;
 	int tpeak[16];
+	double t_in1[16];
+	double t_in2[16];
 	double charge_ap[16];
 	for(unsigned int i =0; i < event->getWaveforms().size(); i++){
 		tpeak[i]=PeakTimeFinder(i);
 		double charge=0;
 		charge_ap[i]=0;
+		
+		
+		
+		t_in1[i]=tpeak[i];
+				while(event->getWaveforms()[i]->getv_amplitude()[int(t_in1[i])]<event->getWaveforms()[i]->getv_amplitude()[tpeak[i]]*0.1){
+				t_in1[i]=t_in1[i]-1;
+			 }
+		t_in2[i]=tpeak[i];
+				while(event->getWaveforms()[i]->getv_amplitude()[int(t_in2[i])]<event->getWaveforms()[i]->getv_amplitude()[tpeak[i]]*0.1){
+				t_in2[i]=t_in2[i]+1;
+			 }
+		
+		
  		for(int k=0; k < NSAMPLING; k++){
  		
  			charge +=  event->getWaveforms()[i]->getv_amplitude()[k]*SAMPLINGPERIOD;
- 			if(abs(k-tpeak[i])<300){
+ 			if(abs(k-tpeak[i])<30){
+ 			//if((k-tpeak[i]<t_in2[i])&&(k-tpeak[i]<t_in1[i])){//?
  				charge_ap[i] +=  event->getWaveforms()[i]->getv_amplitude()[k]*SAMPLINGPERIOD;
  				}
  		}
@@ -208,8 +224,9 @@ void AnaTools::Process(){
 			hc_vector_shifted[i]->Fill(event->getWaveforms()[i]->getcharge()-ped_mean[i]);
 			if(event->getWaveforms()[i]->getcharge()>ped_mean[i]+3*ped_sigma[i]){
 				hc_vector_shifted_cut[i]->Fill(event->getWaveforms()[i]->getcharge()-ped_mean[i]);
+				//hc_vector_ap[i]->Fill(-charge_ap[i]);
 			}
-			hc_vector_ap[i]->Fill(charge_ap[i]);
+			hc_vector_ap[i]->Fill(-charge_ap[i]);
   }
   gDirectory->cd("Hist_Total_Charge");
   hctot->Fill(event->GetTot_charge());
@@ -276,7 +293,7 @@ void AnaTools::TOF(){
 		if(th!=0){
 		 		t_in_ft[i]=tpeak[i];
 				while(event->getWaveforms()[i]->getv_amplitude()[int(t_in_ft[i])]<-th){
-				t_in_ft[i]=t_in_ft[i]-1;
+					t_in_ft[i]=t_in_ft[i]-1;
 		 	}
 		}
 		}
@@ -399,7 +416,7 @@ void AnaTools::Pedestal(string inname){
 				
 				}
 			}	
-			return tpeak;	
+			return tpeak;
    	}
    
    	
