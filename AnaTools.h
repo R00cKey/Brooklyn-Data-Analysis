@@ -54,6 +54,8 @@ class AnaTools{
   TH1D *hTOF_cfm_cut[NCHANNELS];
   TH1D *hTOF_ft[NCHANNELS];
   TH1D *hTOF_ft_cut[NCHANNELS];
+  TH2D *hCORR_prec[NCHANNELS];
+  TH2D *hCORR_succ[NCHANNELS];
   TF1 *fit_TOF_cfm[12];
   TF1 *fit_TOF_cfm_cut[12];
   double gain_[16];

@@ -171,12 +171,41 @@ void AnaTools::BookingHistograms(){
   	gDirectory->mkdir(&newEvent[0]);
   	gDirectory->cd(&newEvent[0]);
   	for(unsigned int k=1; k<=NCHANNELS;k++){
-  		TString name = Form("Event_%d_Channel_%d", i,k);
-  		TString title = Form("Event %d, Channel %d; time[s]; Amplitude(V)", i,k);
+  		TString name = Form("Event_%d_Channel_%d", i,k-1);
+  		TString title = Form("Event %d, Channel %d; time[s]; Amplitude[V]", i,k-1);
   		hist_vector[i-1][k-1] = new TH1D(name, title, 1024, 0, 1024*SAMPLINGPERIOD);
   	}
   gDirectory->cd("..");	
 	}
+	
+	//CORRELATION HISTOGRAMS
+	
+	gDirectory->mkdir("Hist_Corr");
+	gDirectory->cd("Hist_Corr");
+	for(unsigned int k=1; k<=NCHANNELS;k++){
+		if(k==1){
+  		TString name = "Hist_Corr_Channel_0_WRT_1";
+  		TString title = "Correlation hisogram of channel 0 with respect to channel 1; Amplitude of ch.0 [V]; Amplitude of ch.1; Counts(#)";
+  		hCORR_succ[k-1] = new TH2D(name, title, 800, -0.1, 0.1, 800, -0.1, 0.1);
+  	}
+  	else if(k==NCHANNELS){
+  		name = "Hist_Corr_Channel_15_WRT_14";
+  		title = "Correlation histogram of channel 15 with respect to channel 14; Amplitude of ch.15 [V]; Amplitude of ch.14; Counts(#)";
+  		hCORR_prec[k-1] = new TH2D(name, title, 800, -0.1, 0.1, 800, -0.1, 0.1);
+  	}
+  	else{
+  		name = Form("Hist_Corr_Channel_%d_WRT_%d", k-1, k-2 );
+  		title = Form("Correlation histogram of channel %d with respect to channel %d ; Amplitude of ch.%d [V]; Amplitude of ch.%d; Counts(#)", k-1,k-2, k-1, k-2);
+  		hCORR_prec[k-1] = new TH2D(name, title, 800, -0.1, 0.1, 800, -0.1, 0.1);
+  		
+  		name = Form("Hist_Corr_Channel_%d_WRT_%d", k-1, k);
+  		title = Form("Correlation histogram of channel %d with respect to channel %d; Amplitude of ch.%d [V]; Amplitude of ch.%d; Counts(#)", k-1,k, k-1, k);
+  		hCORR_succ[k-1] = new TH2D(name, title, 800, -0.1, 0.1, 800, -0.1, 0.1);
+  	}	
+  }
+	gDirectory->cd("..");
+	
+	
 }
 
 //Method for Data Analysis: Gets charges and light yields and puts them into histograms
