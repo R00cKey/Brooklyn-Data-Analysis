@@ -35,6 +35,7 @@ class AnaTools{
 	void TOF();
 	void f_TOF();
 	void Pedestal(string inname);
+	int PeakTimeFinder(double ch);
  private:
  
 	double cf;
@@ -45,6 +46,7 @@ class AnaTools{
   TH1D* hc_vector[NCHANNELS];
   TH1D* hc_vector_shifted[NCHANNELS];
   TH1D* hc_vector_shifted_cut[NCHANNELS];
+  TH1D* hc_vector_ap[NCHANNELS];
   TH1D *hctot;
   TH1D *hly_vector[NCHANNELS];
   TH1D *hlytot;

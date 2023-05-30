@@ -103,6 +103,15 @@ void AnaTools::BookingHistograms(){
   	}
   gDirectory->cd("..");
   
+  gDirectory->mkdir("Hist_Channels_Charge_around_peak");
+  gDirectory->cd("Hist_Channels_Charge_around_peak");
+	for(unsigned int k=1; k<=NCHANNELS;k++){
+  		TString name = Form("Hist_Channel_%d_around_peak",k-1);
+  		TString title = Form("Charge distribution channel %d around the peak; charge[C]; Counts(#)", k-1);
+  		hc_vector_ap[k-1] = new TH1D(name, title, 50, -2.e-12, 2.e-12);
+  	}
+  gDirectory->cd("..");
+  
    
   //TOF HISTOGRAMS
   for(int i=2;i<14;i++){
@@ -173,10 +182,18 @@ void AnaTools::BookingHistograms(){
 //Method for Data Analysis: Gets charges and light yields and puts them into histograms
 void AnaTools::Process(){
 	double tot_charge=0;
+	int tpeak[16];
+	double charge_ap[16];
 	for(unsigned int i =0; i < event->getWaveforms().size(); i++){
+		tpeak[i]=PeakTimeFinder(i);
 		double charge=0;
+		charge_ap[i]=0;
  		for(int k=0; k < NSAMPLING; k++){
+ 		
  			charge +=  event->getWaveforms()[i]->getv_amplitude()[k]*SAMPLINGPERIOD;
+ 			if(abs(k-tpeak[i])<300){
+ 				charge_ap[i] +=  event->getWaveforms()[i]->getv_amplitude()[k]*SAMPLINGPERIOD;
+ 				}
  		}
  		event->getWaveforms()[i]->setcharge(-charge/50); //I divide by R=50 Ohm
  		tot_charge += event->getWaveforms()[i]->getcharge(); //il getter dovrebbe contenere la charge modificata dal setter che ho appena chiamato
@@ -184,14 +201,15 @@ void AnaTools::Process(){
 	event->settot_charge(tot_charge);
 
 	outfile->cd();
-	
 	//CHARGE HISTOGRAMS FILLING
 	for(unsigned int i =0; i < event->getWaveforms().size(); i++){
+			
 			hc_vector[i]->Fill(event->getWaveforms()[i]->getcharge());
 			hc_vector_shifted[i]->Fill(event->getWaveforms()[i]->getcharge()-ped_mean[i]);
 			if(event->getWaveforms()[i]->getcharge()>ped_mean[i]+3*ped_sigma[i]){
-			hc_vector_shifted_cut[i]->Fill(event->getWaveforms()[i]->getcharge()-ped_mean[i]);
-		}
+				hc_vector_shifted_cut[i]->Fill(event->getWaveforms()[i]->getcharge()-ped_mean[i]);
+			}
+			hc_vector_ap[i]->Fill(charge_ap[i]);
   }
   gDirectory->cd("Hist_Total_Charge");
   hctot->Fill(event->GetTot_charge());
@@ -236,26 +254,31 @@ void AnaTools::TOF(){
 	double t_in_ft[16];
 	double tpeak[16];
 		for(unsigned int i =0; i < event->getWaveforms().size(); i++){
-			V_peak[i]=0;
+			/*V_peak[i]=0;
 			for(int k=0; k < NSAMPLING; k++){
 				if(V_peak[i]>event->getWaveforms()[i]->getv_amplitude()[k]){
 					V_peak[i]=event->getWaveforms()[i]->getv_amplitude()[k];
 					tpeak[i]=k;
 				}
+				
+			}*/
+				
+			tpeak[i]=PeakTimeFinder(i);
+			V_peak[i]=event->getWaveforms()[i]->getv_amplitude()[int(tpeak[i])];
 			//	cout << "tpeak " << tpeak[i] << endl;
-			}
-			if(cf!=0){
+		
+		if(cf!=0){
 				t_in_cfm[i]=tpeak[i];
 				while(event->getWaveforms()[i]->getv_amplitude()[int(t_in_cfm[i])]<V_peak[i]*cf){
 				t_in_cfm[i]=t_in_cfm[i]-1;
 			 }
-			}
-			if(th!=0){
+		}
+		if(th!=0){
 		 		t_in_ft[i]=tpeak[i];
 				while(event->getWaveforms()[i]->getv_amplitude()[int(t_in_ft[i])]<-th){
 				t_in_ft[i]=t_in_ft[i]-1;
 		 	}
-		 }
+		}
 		}
 	double TOF_mean_cfm=(t_in_cfm[0]+t_in_cfm[1]+t_in_cfm[14]+t_in_cfm[15])*0.25*SAMPLINGPERIOD;
 	double TOF_mean_ft=(t_in_ft[0]+t_in_ft[1]+t_in_ft[14]+t_in_ft[15])*0.25*SAMPLINGPERIOD;
@@ -359,5 +382,57 @@ void AnaTools::Pedestal(string inname){
   /*for(int i=0;i<16;i++)
            { 
    	cout << "\tped mean= "<< ped_mean[i] << "\tped sigma= " << ped_sigma[i] << endl;
+   	
+   	
+   	
+   	
    	}*/
-} 
+}   	
+   	
+   	int AnaTools::PeakTimeFinder(double ch){
+   		double V_peak=0;
+   		int tpeak;
+   		for(int k=0; k < NSAMPLING; k++){
+				if(V_peak>event->getWaveforms()[ch]->getv_amplitude()[k]){
+					V_peak=event->getWaveforms()[ch]->getv_amplitude()[k];
+					tpeak=k;
+				
+				}
+			}	
+			return tpeak;	
+   	}
+   
+   	
+   	
+   	
+   	
+   	
+   	
+   	
+   	
+   	
+   	
+   	
+   	
+   	
+   	
+   	
+   	
+   	
+   	
+   	
+   	
+   	
+   	
+   	
+   	
+   	
+   	
+   	
+   	
+   	
+   	
+   	
+   	
+   	
+ 
