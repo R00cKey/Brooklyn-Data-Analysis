@@ -447,10 +447,52 @@ void AnaTools::Pedestal(string inname){
 			}	
 			return tpeak;
    	}
-   
    	
    	
    	
+   int AnaTools::TriggeredChannel(){	
+   	double Vpeak=0;
+   	int ch_trigger=0;
+   	int time_peak;
+   	for (int ch=0; ch<16; ch++){
+			time_peak=PeakTimeFinder(ch);
+			if (Vpeak < -(event->getWaveforms()[ch]->getv_amplitude()[time_peak])){
+					Vpeak = -(event->getWaveforms()[ch]->getv_amplitude()[time_peak]);
+   				ch_trigger=ch;
+   			}
+   		}
+   		return ch_trigger;
+   }
+   	
+   	
+   	
+  void AnaTools::Correlation(){
+  	double A_tr;
+  	double A_prec;
+  	double A_succ;
+  	int tr_ch;
+  	tr_ch=TriggeredChannel();
+  	A_tr=event->getWaveforms()[tr_ch]->getv_amplitude()[PeakTimeFinder(tr_ch)];
+  	if(tr_ch==0){
+  	
+  		A_succ=event->getWaveforms()[tr_ch+1]->getv_amplitude()[PeakTimeFinder(tr_ch+1)];
+  		hCORR_succ[tr_ch]->Fill(A_tr,A_succ);
+  	
+  	
+  	}else if(tr_ch==15){
+  	
+  		A_prec=event->getWaveforms()[tr_ch-1]->getv_amplitude()[PeakTimeFinder(tr_ch-1)];
+  		hCORR_prec[tr_ch]->Fill(A_tr,A_prec);
+  		
+  	}else {
+  	
+  		A_prec=event->getWaveforms()[tr_ch-1]->getv_amplitude()[PeakTimeFinder(tr_ch-1)];
+  		A_succ=event->getWaveforms()[tr_ch+1]->getv_amplitude()[PeakTimeFinder(tr_ch+1)];
+			hCORR_succ[tr_ch]->Fill(A_tr,A_succ);
+			hCORR_prec[tr_ch]->Fill(A_tr,A_prec);
+		}  
+  
+  }
    	
    	
    	

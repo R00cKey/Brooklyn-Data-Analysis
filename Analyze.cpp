@@ -80,6 +80,7 @@ int main(int argc, char *argv[]){
     if(nevent<=3){myAnaTools->FillHistogram(nevent);}
     myAnaTools->Process();
 		myAnaTools->TOF();
+		myAnaTools->Correlation();
     myEvent->Clear();
     nevent++;
     if(nevent%100==0){cout << "\r" <<"Processed " << 100*filepos/filelength << "%" << " of file" <<flush;}
