@@ -1,3 +1,5 @@
+#include <TLatex.h>
+
 void MacroFixedThreshold(string file_in, string file_out, double run, double ft){
   
   
@@ -50,6 +52,13 @@ void MacroFixedThreshold(string file_in, string file_out, double run, double ft)
 		fit_TOF_ft[l-2] ->SetParameter(5,hTOF_ft[l-2]->GetStdDev());
 		fit_TOF_ft[l-2] ->SetParLimits(5,1e-9,20e-9);
 		fit_TOF_ft[l-2] ->SetParLimits(6,0,10); 
+		fit_TOF_ft[l-2] ->SetParName(0,"A_{1}");
+		fit_TOF_ft[l-2] ->SetParName(1,"#mu_{1}");
+		fit_TOF_ft[l-2] ->SetParName(2,"#sigma_{1}");		
+		fit_TOF_ft[l-2] ->SetParName(3,"A_{2}");
+		fit_TOF_ft[l-2] ->SetParName(4,"#mu_{2}");	
+		fit_TOF_ft[l-2] ->SetParName(5,"#sigma_{2}");
+		fit_TOF_ft[l-2] ->SetParName(6,"C");	
 		fit_TOF_ft[l-2] ->SetNpx(10000);
 		
 		hTOF_ft[l-2]->Fit(fit_TOF_ft[l-2],"R");
@@ -76,6 +85,13 @@ void MacroFixedThreshold(string file_in, string file_out, double run, double ft)
 		fit_TOF_ft_cut[l-2] ->SetParLimits(5,1e-9,20e-9); 
 		fit_TOF_ft_cut[l-2] ->SetParameter(6,0.5);
 		fit_TOF_ft_cut[l-2] ->SetParLimits(6,0,10);
+		fit_TOF_ft_cut[l-2] ->SetParName(0,"A_{1}");
+		fit_TOF_ft_cut[l-2] ->SetParName(1,"#mu_{1}");
+		fit_TOF_ft_cut[l-2] ->SetParName(2,"#sigma_{1}");		
+		fit_TOF_ft_cut[l-2] ->SetParName(3,"A_{2}");
+		fit_TOF_ft_cut[l-2] ->SetParName(4,"#mu_{2}");	
+		fit_TOF_ft_cut[l-2] ->SetParName(5,"#sigma_{2}");
+		fit_TOF_ft_cut[l-2] ->SetParName(6,"C");
 		fit_TOF_ft_cut[l-2]	->SetNpx(10000);
 		
 		hTOF_ft_cut[l-2]->Fit(fit_TOF_ft_cut[l-2],"R");
