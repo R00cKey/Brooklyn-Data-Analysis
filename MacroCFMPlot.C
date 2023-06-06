@@ -70,17 +70,17 @@ void MacroCFMPlot(double run, double cf1, double cf2, double cf3, double cf4, do
 		
 		outfile->cd();
 		graph[d]=new TGraphErrors(8, cfs, stdDev[d],err_x,stdDev_err[d]);
-		graph[d]->SetTitle(Form("Time Resolution vs Constant for ch. %d",d+2));
+		graph[d]->SetTitle(Form("Time Resolution vs Constant, channel %d , not cut",d+2));
 		graph[d]->GetXaxis()->SetTitle("Constant");
-		graph[d]->GetYaxis()->SetTitle("Time Resolution");
+		graph[d]->GetYaxis()->SetTitle("Time Resolution[s]");
 		graph[d]->Draw("AC*");
 		graph[d]->Write();
 		
 		outfile_cut->cd();
 		graph_cut[d]=new TGraphErrors(8, cfs, stdDev_cut[d],err_x,stdDev_cut_err[d]);
-		graph_cut[d]->SetTitle(Form("Time Resolution vs Constant for ch. %d (of cut histograms)",d+2));
+		graph_cut[d]->SetTitle(Form("Time Resolution vs Constant, channel %d ",d+2));
 		graph_cut[d]->GetXaxis()->SetTitle("Constant");
-		graph_cut[d]->GetYaxis()->SetTitle("Time Resolution");
+		graph_cut[d]->GetYaxis()->SetTitle("Time Resolution[s]");
 		graph_cut[d]->Draw("AC*");
 		graph_cut[d]->Write();
 	

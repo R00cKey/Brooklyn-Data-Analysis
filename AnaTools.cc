@@ -71,14 +71,14 @@ void AnaTools::BookingHistograms(){
 	gDirectory->mkdir("Hist_Total_Charge");
 	gDirectory->cd("Hist_Total_Charge");
   TString name = Form("Hist_total_charge");
-  TString title = Form("Total Charge distribution; charge[C]; Counts(#)");
+  TString title = Form("Total Charge distribution; Charge[C]; Counts[#]");
   hctot = new TH1D(name, title, 500, -20.e-11, 20.e-11);
   gDirectory->cd("..");
   gDirectory->mkdir("Hist_Channels_Charge");
   gDirectory->cd("Hist_Channels_Charge");
 	for(unsigned int k=1; k<=NCHANNELS;k++){
   		TString name = Form("Hist_Channel_%d",k-1);
-  		TString title = Form("Charge distribution channel %d; charge[C]; Counts(#)", k-1);
+  		TString title = Form("Charge distribution, channel %d; Charge[C]; Counts[#]", k-1);
   		hc_vector[k-1] = new TH1D(name, title, 500, -2.e-11, 2.e-11);
   	}
 
@@ -89,7 +89,7 @@ void AnaTools::BookingHistograms(){
   gDirectory->cd("Hist_Channels_Charge_shifted");
 	for(unsigned int k=1; k<=NCHANNELS;k++){
   		TString name = Form("Hist_Channel_%d_shifted",k-1);
-  		TString title = Form("Charge distribution channel %d shifted of pedestal mean value; charge[C]; Counts(#)", k-1);
+  		TString title = Form("Charge distribution shifted by the mean value of the pedestal, channel %d; Charge[C]; Counts[#]", k-1);
   		hc_vector_shifted[k-1] = new TH1D(name, title, 500, -2.e-11, 2.e-11);
   	}
   gDirectory->cd("..");
@@ -98,7 +98,7 @@ void AnaTools::BookingHistograms(){
   gDirectory->cd("Hist_Channels_Charge_shifted_cut");
 	for(unsigned int k=1; k<=NCHANNELS;k++){
   		TString name = Form("Hist_Channel_%d_shifted_cut",k-1);
-  		TString title = Form("Charge distribution channel %d shifted of pedestal mean value and cut; charge[C]; Counts(#)", k-1);
+  		TString title = Form("Charge distribution shifted by the mean value of the pedestal and cut, channel %d; Charge[C]; Counts[#]", k-1);
   		hc_vector_shifted_cut[k-1] = new TH1D(name, title, 500, -2.e-11, 2.e-11);
   	}
   gDirectory->cd("..");
@@ -107,7 +107,7 @@ void AnaTools::BookingHistograms(){
   gDirectory->cd("Hist_Channels_Charge_around_peak");
 	for(unsigned int k=1; k<=NCHANNELS;k++){
   		TString name = Form("Hist_Channel_%d_around_peak",k-1);
-  		TString title = Form("Charge distribution channel %d around the peak; charge[C]; Counts(#)", k-1);
+  		TString title = Form("Charge distribution evaluated around the peak of the waveform, channel %d; Charge[C]; Counts[#]", k-1);
   		hc_vector_ap[k-1] = new TH1D(name, title, 400, -10.e-11, 60.e-11);
   	}
   gDirectory->cd("..");
@@ -123,11 +123,11 @@ void AnaTools::BookingHistograms(){
  			gDirectory->cd(&newHist[0]);
 
 			TString name = Form("Hist_TOF_cfm_ch%d",i);
-			TString title = Form("Distribution of time of arrival of ch%d wrt mean time of arrival of ch 0,1,14,15 using Constant Fraction Method with constant %lf; Time of arrival[s]; Counts (#)",i,cf);
+			TString title = Form("Distribution of time of arrival using Constant Fraction Method, constant=%g, channel %d, not cut; Time of arrival[s]; Counts [#]",cf,i);
   		hTOF_cfm[i] = new TH1D(name, title, 500, -1.e-7, 1.e-7);
 
   		name = Form("Hist_TOF_cfm_ch%d_cut",i);
-  		title = Form("Distribution of time of arrival of ch%d wrt mean time of arrival of ch 0,1,14,15 using Constant Fraction Method with constant %lf (without pedestal); Time of arrival[s]; Counts (#)",i,cf);
+  		title = Form("Distribution of time of arrival using Constant Fraction Method, constant=%g, channel %d; Time of arrival[s]; Counts [#]",cf,i);
   		hTOF_cfm_cut[i] = new TH1D(name, title, 500, -1.e-7, 1.e-7);
   		gDirectory->cd("..");
   		}
@@ -140,11 +140,11 @@ void AnaTools::BookingHistograms(){
  			gDirectory->cd(&newHist2[0]);
 	
   		name = Form("Hist_TOF_ft_ch%d",i);
-  		title = Form("Distribution of time of arrival of ch%d wrt mean time of arrival of ch 0,1,14,15 using Fixed Threshold Method with constant %lf; Time of arrival[s]; Counts (#)",i,th);
+  		title = Form("Distribution of time of arrival using Fixed Threshold Method, threshold=%gV, channel %d, not cut; Time of arrival[s]; Counts [#]",th,i);
   		hTOF_ft[i] = new TH1D(name, title, 500, -1.e-7, 1.e-7);
 
   		name = Form("Hist_TOF_ft_ch%d_cut",i);
-  		title = Form("Distribution of time of arrival of ch%d wrt mean time of arrival of ch 0,1,14,15 using Fixed Threshold Method with constant %lf (without pedestal); Time of arrival[s]; Counts (#)",i,th);
+  		title = Form("Distribution of time of arrival using Fixed Threshold Method, threshold=%gV, channel %d; Time of arrival[s]; Counts [#]",th,i);
   		hTOF_ft_cut[i] = new TH1D(name, title, 500, -1.e-7, 1.e-7);
  			gDirectory->cd("..");
   	}
@@ -158,7 +158,7 @@ void AnaTools::BookingHistograms(){
   gDirectory->cd("Hist_Channels_Light_Yield");
 	for(unsigned int k=1; k<=NCHANNELS;k++){
   		TString name = Form("Hist_LY_Channel_%d",k-1);
-  		TString title = Form("Light Yield Distribution Channel %d; LY[# produced photons/Energy loss]; Counts(#)", k-1);
+  		TString title = Form("Light Yield Distribution Channel %d; LY[# produced photons/Energy loss]; Counts[#]", k-1);
   		hly_vector[k-1] = new TH1D(name, title, 100, -100., 2000.);
   	}
 	gDirectory->cd("..");
@@ -185,22 +185,22 @@ void AnaTools::BookingHistograms(){
 	for(unsigned int k=1; k<=NCHANNELS;k++){
 		if(k==1){
   		TString name = "Hist_Corr_Channel_0_WRT_1";
-  		TString title = "Correlation hisogram of channel 0 with respect to channel 1; Amplitude of ch.0 [V]; Amplitude of ch.1; Counts(#)";
-  		hCORR_succ[k-1] = new TH2D(name, title, 800, -0.1, 0.1, 800, -0.1, 0.1);
+  		TString title = "Correlation histogram of channel 0 with respect to channel 1; Amplitude of channel 0 [V]; Amplitude of channel 1[V]; Counts[#]";
+  		hCORR_succ[k-1] = new TH2D(name, title, 800, -0.1, 0, 800, -0.1,0);
   	}
   	else if(k==NCHANNELS){
   		name = "Hist_Corr_Channel_15_WRT_14";
-  		title = "Correlation histogram of channel 15 with respect to channel 14; Amplitude of ch.15 [V]; Amplitude of ch.14; Counts(#)";
-  		hCORR_prec[k-1] = new TH2D(name, title, 800, -0.1, 0.1, 800, -0.1, 0.1);
+  		title = "Correlation histogram of channel 15 with respect to channel 14; Amplitude of channel 15 [V]; Amplitude of channel 14[V]; Counts[#]";
+  		hCORR_prec[k-1] = new TH2D(name, title, 800, -0.1, 0, 800, -0.1, 0);
   	}
   	else{
   		name = Form("Hist_Corr_Channel_%d_WRT_%d", k-1, k-2 );
-  		title = Form("Correlation histogram of channel %d with respect to channel %d ; Amplitude of ch.%d [V]; Amplitude of ch.%d; Counts(#)", k-1,k-2, k-1, k-2);
-  		hCORR_prec[k-1] = new TH2D(name, title, 800, -0.1, 0.1, 800, -0.1, 0.1);
+  		title = Form("Correlation histogram of channel %d with respect to channel %d ; Amplitude of channel %d [V]; Amplitude of channel %d[V]; Counts[#]", k-1,k-2, k-1, k-2);
+  		hCORR_prec[k-1] = new TH2D(name, title, 800, -0.1, 0, 800, -0.1, 0);
   		
   		name = Form("Hist_Corr_Channel_%d_WRT_%d", k-1, k);
-  		title = Form("Correlation histogram of channel %d with respect to channel %d; Amplitude of ch.%d [V]; Amplitude of ch.%d; Counts(#)", k-1,k, k-1, k);
-  		hCORR_succ[k-1] = new TH2D(name, title, 800, -0.1, 0.1, 800, -0.1, 0.1);
+  		title = Form("Correlation histogram of channel %d with respect to channel %d; Amplitude of channel %d [V]; Amplitude of channel %d[V]; Counts[#]", k-1,k, k-1, k);
+  		hCORR_succ[k-1] = new TH2D(name, title, 800, -0.1, 0, 800, -0.1, 0);
   	}	
   }
 	gDirectory->cd("..");
