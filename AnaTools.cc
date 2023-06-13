@@ -186,21 +186,21 @@ void AnaTools::BookingHistograms(){
 		if(k==1){
   		TString name = "Hist_Corr_Channel_0_WRT_1";
   		TString title = "Correlation histogram of channel 0 with respect to channel 1; Amplitude of channel 0 [V]; Amplitude of channel 1[V]; Counts[#]";
-  		hCORR_succ[k-1] = new TH2D(name, title, 800, -0.1, 0, 800, -0.1,0);
+  		hCORR_succ[k-1] = new TH2D(name, title, 800, -1, 0, 800, -0.1,0);
   	}
   	else if(k==NCHANNELS){
   		name = "Hist_Corr_Channel_15_WRT_14";
   		title = "Correlation histogram of channel 15 with respect to channel 14; Amplitude of channel 15 [V]; Amplitude of channel 14[V]; Counts[#]";
-  		hCORR_prec[k-1] = new TH2D(name, title, 800, -0.1, 0, 800, -0.1, 0);
+  		hCORR_prec[k-1] = new TH2D(name, title, 800, -1, 0, 800, -0.1, 0);
   	}
   	else{
   		name = Form("Hist_Corr_Channel_%d_WRT_%d", k-1, k-2 );
   		title = Form("Correlation histogram of channel %d with respect to channel %d ; Amplitude of channel %d [V]; Amplitude of channel %d[V]; Counts[#]", k-1,k-2, k-1, k-2);
-  		hCORR_prec[k-1] = new TH2D(name, title, 800, -0.1, 0, 800, -0.1, 0);
+  		hCORR_prec[k-1] = new TH2D(name, title, 800, -1, 0, 800, -0.1, 0);
   		
   		name = Form("Hist_Corr_Channel_%d_WRT_%d", k-1, k);
   		title = Form("Correlation histogram of channel %d with respect to channel %d; Amplitude of channel %d [V]; Amplitude of channel %d[V]; Counts[#]", k-1,k, k-1, k);
-  		hCORR_succ[k-1] = new TH2D(name, title, 800, -0.1, 0, 800, -0.1, 0);
+  		hCORR_succ[k-1] = new TH2D(name, title, 800, -1, 0, 800, -0.1, 0);
   	}	
   }
 	gDirectory->cd("..");
@@ -464,6 +464,20 @@ void AnaTools::Pedestal(string inname){
    		return ch_trigger;
    }
    	
+     int AnaTools::TriggeredChannel2(){	
+   	double Vth=-0.4;
+   	int ch_trigger=0;
+   	for (int ch=0; ch<16; ch++){
+			for(int k=0; k < NSAMPLING; k++){
+				if(Vth>event->getWaveforms()[ch]->getv_amplitude()[k]){
+					ch_trigger=ch;
+					time_trigger_2=k;
+				}
+			}	
+			
+   		}
+   		return ch_trigger;
+   }
    	
    	
   void AnaTools::Correlation(){
@@ -473,6 +487,35 @@ void AnaTools::Pedestal(string inname){
   	int tr_ch;
   	tr_ch=TriggeredChannel();
   	A_tr=event->getWaveforms()[tr_ch]->getv_amplitude()[PeakTimeFinder(tr_ch)];
+  	if(tr_ch==0){
+  	
+  		A_succ=event->getWaveforms()[tr_ch+1]->getv_amplitude()[PeakTimeFinder(tr_ch+1)];
+  		hCORR_succ[tr_ch]->Fill(A_tr,A_succ);
+  	
+  	
+  	}else if(tr_ch==15){
+  	
+  		A_prec=event->getWaveforms()[tr_ch-1]->getv_amplitude()[PeakTimeFinder(tr_ch-1)];
+  		hCORR_prec[tr_ch]->Fill(A_tr,A_prec);
+  		
+  	}else {
+  	
+  		A_prec=event->getWaveforms()[tr_ch-1]->getv_amplitude()[PeakTimeFinder(tr_ch-1)];
+  		A_succ=event->getWaveforms()[tr_ch+1]->getv_amplitude()[PeakTimeFinder(tr_ch+1)];
+			hCORR_succ[tr_ch]->Fill(A_tr,A_succ);
+			hCORR_prec[tr_ch]->Fill(A_tr,A_prec);
+		}  
+  
+  }
+   	
+   	
+    void AnaTools::Correlation2(){
+  	double A_tr;
+  	double A_prec;
+  	double A_succ;
+  	int tr_ch;
+  	tr_ch=TriggeredChannel2();
+  	A_tr=event->getWaveforms()[tr_ch]->getv_amplitude()[PeakTimeFinder(tr_ch)+30];
   	if(tr_ch==0){
   	
   		A_succ=event->getWaveforms()[tr_ch+1]->getv_amplitude()[PeakTimeFinder(tr_ch+1)];

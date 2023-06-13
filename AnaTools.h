@@ -37,9 +37,11 @@ class AnaTools{
 	void Pedestal(string inname);
 	int PeakTimeFinder(double ch);
 	int TriggeredChannel();
+	int TriggeredChannel2();
 	void Correlation();
+	void Correlation2();
  private:
- 
+ 	int time_trigger_2;
 	double cf;
 	double th;
   TFile *outfile;
