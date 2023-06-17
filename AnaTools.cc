@@ -50,7 +50,8 @@ AnaTools::AnaTools(TFile *f, Event *myEvent, double cf_, double th_){
 
   //INITIALIZING TRAPPING EFFICIENCY
   for(int k=0; k<16; k++){
-		etr_[k]=4.88e-2;
+  	if(k==6||k==7||k==8){etr[k]=4.2e-2}
+		else{etr_[k]=4.88e-2;}
 	}
 }
 
