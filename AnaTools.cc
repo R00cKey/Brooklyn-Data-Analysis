@@ -35,6 +35,7 @@ AnaTools::AnaTools(TFile *f, Event *myEvent, double cf_, double th_){
      if(qeinfile.fail()) // checks to see if file opended 
    	 { 
 		  	cout << "error= input file of pedestal not found." << endl; 
+		  	exit(2);
    	 } 
 		  while(!qeinfile.eof()) // reads file to end of file
       { 
