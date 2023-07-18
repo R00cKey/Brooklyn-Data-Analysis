@@ -30,6 +30,8 @@ class AnaTools{
   void Process();
   double getLightYield(double Q, double gain, double qe, double etr); //qe: Quantum Efficiency etr: Transimission efficiency
   //Print Histogram to File method
+  void Peakdistance_histo();
+  void Peakdistance();
   void FillHistogram(int directory);
   void Clear();
 	void TOF();
@@ -58,6 +60,11 @@ class AnaTools{
   TH1D *hTOF_cfm_cut[NCHANNELS];
   TH1D *hTOF_ft[NCHANNELS];
   TH1D *hTOF_ft_cut[NCHANNELS];
+  TH1D *PD_histograms[NCHANNELS];
+  TH1D *PV_histograms[NCHANNELS];
+  TH1D *PS_histograms[NCHANNELS];
+  TH1D *PSP_histograms[NCHANNELS];
+  TH1D *FPD_histograms[NCHANNELS];
   TH2D *hCORR_prec[NCHANNELS];
   TH2D *hCORR_succ[NCHANNELS];
   TF1 *fit_TOF_cfm[12];

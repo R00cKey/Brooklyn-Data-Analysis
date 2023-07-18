@@ -50,7 +50,7 @@ AnaTools::AnaTools(TFile *f, Event *myEvent, double cf_, double th_){
 
   //INITIALIZING TRAPPING EFFICIENCY
   for(int k=0; k<16; k++){
-  	if(k==6||k==7||k==8){etr_[k]=4.2e-2;}
+	if(k==6||k==7||k==8){etr_[k]=4.2e-2;}
 		else{etr_[k]=4.88e-2;}
 	}
 }
@@ -541,7 +541,237 @@ void AnaTools::Pedestal(string inname){
    	
    	
    	
+   void AnaTools::Peakdistance_histo(){
+
+
+outfile->cd();
+	
+ 	gDirectory->mkdir("Peak_Distance_Distribution");
+ 	gDirectory->cd("Peak_Distance_Distribution");
+ 	
+ 	for(int j=0;j<16;j++){			
+	TString name = Form("Hist_Peak_Distribution_%d",j);
+	TString title = Form("Distribution of delayed peaks Channel %d ;Time [s]; Counts [#], Bin width = 1ns ",j);
+  	PD_histograms[j]= new TH1D(name, title, 50, 0, 50.e-9);
+ 	}
+ 	
+gDirectory->cd("..");	
+
+
+outfile->cd();
+	
+ 	gDirectory->mkdir("Peak_DistanceVoltages");
+ 	gDirectory->cd("Peak_DistanceVoltages");
+ 	
+ 	for(int j=0;j<16;j++){			
+	TString name = Form("Distribution of reflectance ratio channel %d",j);
+	TString title = Form("Distribution of reflectance ratio channel %d; Ratio ; Counts [#], Bin Width= 0.014 ",j);
+  	PV_histograms[j]= new TH1D(name, title, 70, 0, 1);
+ 	}
+ 	
+gDirectory->cd("..");	
+
+
+
+
+outfile->cd();
+	
+ 	gDirectory->mkdir("Peak_DistanceTsearch");
+ 	gDirectory->cd("Peak_DistanceTsearch");
+ 	
+ 	
+ 	for(int j=0;j<16;j++){			
+	TString name = Form("Hist_Peak_Tsearch_%d",j);
+	TString title = Form("Distribution of delayed peaks Channel %d Tspectrum method;Time [s];Counts [#], Bin width = 1ns",j);
+  	PS_histograms[j]= new TH1D(name, title, 50, 0, 50.e-9);
+  	
+  	TString name1 = Form("Hist_Peak_Tsearch_ internal_%d",j);
+	TString title1 = Form("Hist_Peak_Tsearch_internal_%d",j);
+  	PSP_histograms[j]= new TH1D(name1, title1,  1024, 0, 1024*312.5*1e-12);
+  	
+  	}
+ 	
+ 
+gDirectory->cd("..");	
+
+outfile->cd();
+
+ 	gDirectory->mkdir("First_Peak_Diff");
+ 	gDirectory->cd("First_Peak_Diff");
+ 	
+ 	
+ 	for(int j=0;j<16;j++){			
+	TString name = Form("First_Peak_Diff%d",j);
+	TString title = Form("First_Peak_Diff%d",j);
+  	FPD_histograms[j]= new TH1D(name, title, 70, 0, 1.e-9);
+  	
+  	}
+ 	
+ 
+gDirectory->cd("..");	
+
+
+
+
+}
+
+
+
+
+
+void AnaTools::Peakdistance(){
+	double V_peak1[16];
+	double V_peak2[16];
+	double V_peak3[16];
+	double Peakfraction1[16];
+	double Peakfraction2[16];
+	int tpeak1[16];
+	int tpeak2[16];
+	int tpeak3[16];
+	double internal=0;
+	double PeakD1[event->getWaveforms().size()];
+	double PeakD2[event->getWaveforms().size()];
+
+	
+
+ 	
+   	for(unsigned int i=0; i < event->getWaveforms().size(); i++){
+   		V_peak1[i]=0;
+   		V_peak2[i]=0;
+   		V_peak3[i]=0;
+   		PSP_histograms[i]->Reset();
+   		for(int k=8; k < NSAMPLING-8; k++){
+   		
+   		PSP_histograms[i]->SetBinContent(k+1, -event->getWaveforms()[i]->getv_amplitude()[k]);
+   		
+   		
+   			if(V_peak1[i]>event->getWaveforms()[i]->getv_amplitude()[k]){
+					V_peak1[i]=event->getWaveforms()[i]->getv_amplitude()[k];
+					tpeak1[i]=k;
+			}
+		}
+   		for(int k=tpeak1[i]; k < NSAMPLING-20; k++){
+   		internal=event->getWaveforms()[i]->getv_amplitude()[k];
+   			if(internal<event->getWaveforms()[i]->getv_amplitude()[k-1]  &&
+   			internal<event->getWaveforms()[i]->getv_amplitude()[k-2]  &&
+   			internal<event->getWaveforms()[i]->getv_amplitude()[k-3]  &&
+   			internal<event->getWaveforms()[i]->getv_amplitude()[k-4]  &&
+   			internal<event->getWaveforms()[i]->getv_amplitude()[k-5]  &&
+   			internal<event->getWaveforms()[i]->getv_amplitude()[k-6]  &&
+   			internal<event->getWaveforms()[i]->getv_amplitude()[k-7]  &&
+   			internal<event->getWaveforms()[i]->getv_amplitude()[k-8]  &&
+   			internal<event->getWaveforms()[i]->getv_amplitude()[k-9]  &&
+
+   			internal<event->getWaveforms()[i]->getv_amplitude()[k+1]  &&
+   			internal<event->getWaveforms()[i]->getv_amplitude()[k+2]  &&
+   			internal<event->getWaveforms()[i]->getv_amplitude()[k+3]  &&
+   			internal<event->getWaveforms()[i]->getv_amplitude()[k+4]  &&
+   			internal<event->getWaveforms()[i]->getv_amplitude()[k+5]  &&
+   			internal<event->getWaveforms()[i]->getv_amplitude()[k+6]  &&
+   			internal<event->getWaveforms()[i]->getv_amplitude()[k+7]  &&
+   			internal<event->getWaveforms()[i]->getv_amplitude()[k+8]  &&
+   			internal<event->getWaveforms()[i]->getv_amplitude()[k+9]  &&
+
+   			internal<V_peak2[i] && internal> V_peak1[i]){
+					V_peak2[i]=internal;
+					tpeak2[i]=k;
+		
+   			}
+   			
+   			}
+   			
+   		for(int k=tpeak1[i]; k < NSAMPLING-20; k++){
+   		internal=event->getWaveforms()[i]->getv_amplitude()[k];
+   			if(internal<event->getWaveforms()[i]->getv_amplitude()[k-1]  &&
+   			internal<event->getWaveforms()[i]->getv_amplitude()[k-2]  &&
+   			internal<event->getWaveforms()[i]->getv_amplitude()[k-3]  &&
+   			internal<event->getWaveforms()[i]->getv_amplitude()[k-4]  &&
+   			internal<event->getWaveforms()[i]->getv_amplitude()[k-5]  &&
+   			internal<event->getWaveforms()[i]->getv_amplitude()[k-6]  &&
+   			internal<event->getWaveforms()[i]->getv_amplitude()[k-7]  &&
+   			internal<event->getWaveforms()[i]->getv_amplitude()[k-8]  &&
+   			internal<event->getWaveforms()[i]->getv_amplitude()[k-9]  &&
+
+   			internal<event->getWaveforms()[i]->getv_amplitude()[k+1]  &&
+   			internal<event->getWaveforms()[i]->getv_amplitude()[k+2]  &&
+   			internal<event->getWaveforms()[i]->getv_amplitude()[k+3]  &&
+   			internal<event->getWaveforms()[i]->getv_amplitude()[k+4]  &&
+   			internal<event->getWaveforms()[i]->getv_amplitude()[k+5]  &&
+   			internal<event->getWaveforms()[i]->getv_amplitude()[k+6]  &&
+   			internal<event->getWaveforms()[i]->getv_amplitude()[k+7]  &&
+   			internal<event->getWaveforms()[i]->getv_amplitude()[k+8]  &&
+   			internal<event->getWaveforms()[i]->getv_amplitude()[k+9]  &&
+
+   			internal<V_peak3[i] && internal>V_peak1[i] && internal>V_peak2[i]){
+					V_peak3[i]=internal;
+					tpeak3[i]=k;
+		
+   			}	
+   			
+   		}
+   		
+   		
+
+		TSpectrum *s = new TSpectrum(20);
+		Int_t nfound = s->Search(PSP_histograms[i],3,"noMarkov",0.2);
+		s->SetAverageWindow(20);
+		s->SetResolution(0.5);
+		Double_t* Posizione= s->GetPositionX();
+		
+   	  		
+
+
+   		for(int b=1;b<nfound; b++){
+
+  		PS_histograms[i]->Fill(abs(Posizione[0]-Posizione[b]));
+   			
+   		}
+
+
+		
+   		PeakD1[i]=(tpeak2[i]-tpeak1[i])*312.5*1e-12;
+   		Peakfraction1[i]=V_peak2[i]/V_peak1[i];
+   		
+   		PeakD2[i]=(tpeak3[i]-tpeak1[i])*312.5*1e-12;
+   		Peakfraction2[i]=V_peak3[i]/V_peak1[i];
+
+  		
+  		
+  		for(int b=0;b<nfound; b++){
+  		
+  		FPD_histograms[i]->Fill(abs(Posizione[0]-tpeak1[i]*312.5*1e-12));
+  		
+  		}
+  		
+
+  
+  		delete s;
+   	}
    	
+
+           	for (int j=0;j<16;j++){
+	   	if(PeakD1[j]==tpeak1[j]  || V_peak1[j]>-0.02|| V_peak2[j]>-0.002){}
+		else{
+		PD_histograms[j]->Fill(PeakD1[j]);
+		PV_histograms[j]->Fill(Peakfraction1[j]);
+		}
+   	
+   	
+   		if(PeakD2[j]==tpeak1[j] ||V_peak1[j]>-0.02 || V_peak3[j]>-0.002){}
+		else{
+		PD_histograms[j]->Fill(PeakD2[j]);
+		PV_histograms[j]->Fill(Peakfraction2[j]);
+		}
+   	
+   		
+   	
+   	}
+
+	
+}		
+   		
+   		
+   			
    	
    	
    	

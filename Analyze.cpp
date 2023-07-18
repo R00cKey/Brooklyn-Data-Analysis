@@ -74,6 +74,7 @@ int main(int argc, char *argv[]){
   infile.seekg (0, infile.end);
   filelength = infile.tellg();
 	myAnaTools->Pedestal("gain.dat");
+	myAnaTools->Peakdistance_histo();
   //loop on events, read an event until file is finished
   while(filepos<filelength){
     myEvent->ReadEvent(inname, &filepos);
@@ -81,6 +82,7 @@ int main(int argc, char *argv[]){
     myAnaTools->Process();
 		myAnaTools->TOF();
 		myAnaTools->Correlation2();
+		myAnaTools->Peakdistance();
     myEvent->Clear();
     nevent++;
     if(nevent%100==0){cout << "\r" <<"Processed " << 100*filepos/filelength << "%" << " of file" <<flush;}
