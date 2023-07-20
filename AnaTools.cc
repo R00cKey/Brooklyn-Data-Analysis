@@ -1,4 +1,4 @@
-#include <stdint.h>
+ #include <stdint.h>
 #include <inttypes.h>
 #include <stdio.h>
 #include <TFile.h>
@@ -239,7 +239,7 @@ void AnaTools::Process(){
  			charge +=  event->getWaveforms()[i]->getv_amplitude()[k]*SAMPLINGPERIOD;
  			if(abs(k-tpeak[i])<30){
  			//if((k-tpeak[i]<t_in2[i])&&(k-tpeak[i]<t_in1[i])){//?
- 				charge_ap[i] +=  event->getWaveforms()[i]->getv_amplitude()[k]*SAMPLINGPERIOD;
+ 				charge_ap[i] +=  event->getWaveforms()[i]->getv_amplitude()[k]*SAMPLINGPERIOD/50; //Divide by coaxial cable resistance 50 Ohm
  				}
  		}
  		event->getWaveforms()[i]->setcharge(-charge/50); //I divide by R=50 Ohm
