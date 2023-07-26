@@ -25,9 +25,9 @@ While on bash, simply write `startroot` to source root and TBrowser will open th
 inside the directory with all the headers.
 To execute, write the following: 
 ```
-./Analyze -in 'Input File directory and name' -out 'Output File name.root'
+./Analyze -in 'Input File directory and name' -out 'Output File name.root' -frac 'fraction constant for time of arrival' -th 'threshold for time of arrival'
 ```
-
+The commands -frac and -th are not mandatory to run the program.
 The progress of input file reading should be printed on bash.
 
 ## Macro
